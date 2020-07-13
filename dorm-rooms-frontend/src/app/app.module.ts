@@ -2,10 +2,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
+import { ReservationComponent } from './reservation/reservation.component';
+import { InfoBoxComponent } from './info-box/info-box.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ReservationComponent,
+    InfoBoxComponent
   ],
   imports: [
     BrowserModule

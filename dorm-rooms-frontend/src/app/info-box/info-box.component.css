@@ -1,0 +1,17 @@
+section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 20em;
+  height: 2em;
+  border-radius: 0 0 1em 0;
+  line-height: 2em;
+  text-align: center;
+  padding: 0 2em;
+}
+section span {
+  margin-right: 0.75em;
+}
+section span:last-child {
+  margin-right: 0;
+}
