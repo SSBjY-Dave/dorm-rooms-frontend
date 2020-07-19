@@ -1,0 +1,14 @@
+.people:nth-child(odd) {
+    background: #90c4ff;
+}
+
+.admin_menu { 
+    display: fixed;
+    top: 0;
+    
+}
+
+.people:hover .admin_menu {
+    display: block;
+    top: 0;
+}
