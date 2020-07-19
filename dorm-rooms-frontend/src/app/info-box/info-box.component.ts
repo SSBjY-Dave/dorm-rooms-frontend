@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {DormService} from '../dorm.service';
 
 @Component({
   selector: 'app-info-box',
@@ -11,8 +12,13 @@ export class InfoBoxComponent implements OnInit {
   public neptunId = 'US4GMR';
   public room = '202';
 
-  constructor() { }
+  private dormService: DormService;
+
+  constructor(dormService: DormService) {
+    this.dormService = dormService;
+  }
 
   ngOnInit(): void {
+    this.dormService.getCurrentUser.subscribe(a => console.log(a));
   }
 }
