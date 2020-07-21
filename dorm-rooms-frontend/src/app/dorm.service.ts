@@ -17,6 +17,9 @@ export class DormService {
   get getAllPeople(): Observable<People[]> {
     return this.startGetRequest<People[]>(Urls.PERSON_GET_ALL);
   }
+  get getAllPeopleAdmin(): Observable<People[]> {
+    return this.startGetRequest<People[]>(Urls.PERSON_GET_ALL_ADMIN);
+  }
 
   private readonly authorizationToken: string;
   private http: HttpClient;

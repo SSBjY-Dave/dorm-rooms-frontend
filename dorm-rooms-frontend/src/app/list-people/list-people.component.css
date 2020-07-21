@@ -1,14 +1,30 @@
-.people:nth-child(odd) {
-    background: #90c4ff;
-}
-
 .admin_menu { 
-    display: fixed;
-    top: 0;
-    
+    opacity: 0;
+    transition: opacity 500ms;
 }
 
-.people:hover .admin_menu {
-    display: block;
-    top: 0;
+tr:hover .admin_menu {
+    opacity: 1;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    padding-top: 1em 1.5em 1em 1.5em;
+    text-align: center;
+    transition: background 500ms; 
+}
+
+tr:hover td {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+tr:nth-child(odd) {
+    background: rgb(190, 230, 255);
+}
+
+tr:nth-child(even) {
+    background: rgb(255, 255, 255); 
 }

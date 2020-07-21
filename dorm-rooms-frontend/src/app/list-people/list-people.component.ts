@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DormService, People } from '../dorm.service';
 
 @Component({
   selector: 'app-list-people',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListPeopleComponent implements OnInit {
 
-  constructor() { }
+  constructor(dormService: DormService) { 
+    this.dormService = dormService;
+  }
 
+  private dormService: DormService;
+  public people: People[];
   ngOnInit(): void {
+      this.dormService.getAllPeopleAdmin.subscribe(p => this.people = p);
   }
 
 }
