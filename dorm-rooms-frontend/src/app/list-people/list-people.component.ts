@@ -8,14 +8,14 @@ import { DormService, People } from '../dorm.service';
 })
 export class ListPeopleComponent implements OnInit {
 
-  constructor(dormService: DormService) { 
+  constructor(dormService: DormService) {
     this.dormService = dormService;
   }
 
   private dormService: DormService;
   public people: People[];
   ngOnInit(): void {
-      this.dormService.getAllPeopleAdmin.subscribe(p => this.people = p);
+      this.dormService.getAllPeopleAdmin().subscribe(p => this.people = p);
   }
 
 }

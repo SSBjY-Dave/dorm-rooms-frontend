@@ -19,6 +19,6 @@ export class InfoBoxComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dormService.getCurrentUser.subscribe(a => console.log(a));
+    this.dormService.getCurrentPerson().subscribe(a => console.log(a));
   }
 }
