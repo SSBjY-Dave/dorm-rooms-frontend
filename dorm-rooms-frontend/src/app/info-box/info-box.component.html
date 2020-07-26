@@ -1,6 +1,8 @@
-<section class="bg-highlight bg-text-highlight opacity-transition" [class.opacity-half-hidden]="sneekIncreased" (mouseover)="sneekIncreased = false" (mouseout)="sneekIncreased = true">
-  <span>{{name}}</span>
-  <span>{{neptunId}}</span>
-  <span>{{room}}</span>
-  <span><a href="#">admin</a></span>
+<section class="bg-highlight bg-text-highlight opacity-transition">
+  <ng-template [ngIf]="person !== undefined">
+    <span>{{person.name}}</span>
+    <span>{{person.neptunId}}</span>
+    <span>{{(person.roomConnector !== null) ? person.roomConnector.room.id : '-'}}</span>
+    <span ng-if="person.isAdmin"><i class="fa fa-user-circle fa-lg"></i></span>
+  </ng-template>
 </section>

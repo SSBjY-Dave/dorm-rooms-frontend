@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {DormService} from '../dorm.service';
+import { DormService, People } from '../dorm.service';
 
 @Component({
   selector: 'app-info-box',
@@ -7,18 +7,15 @@ import {DormService} from '../dorm.service';
   styleUrls: ['./info-box.component.css']
 })
 export class InfoBoxComponent implements OnInit {
-  public sneekIncreased = true;
-  public name = 'Orcsik Dávid';
-  public neptunId = 'US4GMR';
-  public room = '202';
-
   private dormService: DormService;
+  public person: People;
 
   constructor(dormService: DormService) {
     this.dormService = dormService;
   }
 
   ngOnInit(): void {
-    this.dormService.getCurrentPerson().subscribe(a => console.log(a));
+    this.dormService.getCurrentPerson().subscribe(p => this.person = p);
   }
+
 }
