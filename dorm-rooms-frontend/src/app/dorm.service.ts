@@ -81,11 +81,11 @@ export class DormService {
   // Room operations
   public setRoomLockState(room: Room, locked: boolean): Observable<RoomRequestStatus> {
     return this.startPostRequest<RoomRequestStatus>(
-      Urls.ROOM_SET_LOCK_STATE, new RoomModificationData(room, room.getSex(), locked));
+      Urls.ROOM_SET_LOCK_STATE, new RoomModificationData(room, room.sex, locked));
   }
   public setRoomAllowed(room: Room, sex: Sex): Observable<RoomRequestStatus> {
     return this.startPostRequest<RoomRequestStatus>(
-      Urls.ROOM_SET_LOCK_STATE, new RoomModificationData(room, sex, room.isLocked()));
+      Urls.ROOM_SET_LOCK_STATE, new RoomModificationData(room, sex, room.locked));
   }
 
   private getRequestHeader(): any {
@@ -105,109 +105,57 @@ export enum Sex {
   MALE, FEMALE, ANY
 }
 export class People {
-  private id: bigint;
-  private name: string;
-  private neptunId: string;
-  private email: string;
-  private newbie: boolean;
-  private sex: Sex;
-  private labelConnectors: LabelConnector[];
-  private roomConnector: RoomConnector;
-  private roleConnector: RoleConnector[];
+  public id: bigint;
+  public name: string;
+  public neptunId: string;
+  public email: string;
+  public newbie: boolean;
+  public sex: Sex;
+  public labelConnectors: LabelConnector[];
+  public roomConnector: RoomConnector;
+  public roleConnector: RoleConnector[];
 
-
-  public getId(): bigint { return this.id; }
-  public getName(): string { return this.name; }
-  public getNeptunId(): string { return this.neptunId; }
-  public getEmail(): string { return this.email; }
-  public getNewbie(): boolean { return this.newbie; }
-  public getSex(): Sex { return this.sex; }
-  public getLabelConnectors(): LabelConnector[] { return this.labelConnectors; }
-  public getRoomConnector(): RoomConnector { return this.roomConnector; }
-  public getRoleConnector(): RoleConnector[] { return this.roleConnector; }
-
-  public setName(value: string): void { this.name = value; }
-  public setEmail(value: string): void { this.email = value; }
-  public setNewbie(value: boolean): void { this.newbie = value; }
-  public setSex(value: Sex): void { this.sex = value; }
+  get isAdmin(): boolean {
+    console.log(this.roleConnector.find(rc => rc.role.role === RoleType.ADMIN));
+    return this.roleConnector.find(rc => rc.role.role === RoleType.ADMIN) !== null;
+  }
 }
 export class LabelConnector {
-  private id: bigint;
-  private people: People;
-  private label: Label;
-
-
-  public setId(): bigint { return this.id; }
-  public setPeople(): People { return this.people; }
-  public setLabel(): Label { return this.label; }
+  public id: bigint;
+  public people: People;
+  public label: Label;
 }
 export class Label {
-  private id: bigint;
-  private name: string;
-  private labelConnectors: LabelConnector[];
-
-
-  public getId(): bigint { return this.id; }
-  public getName(): string { return this.name; }
-  public getLabelConnectors(): LabelConnector[] { return this.labelConnectors; }
-
-  public setName(value: string): void { this.name = value; }
+  public id: bigint;
+  public name: string;
+  public labelConnectors: LabelConnector[];
 }
 export class RoomConnector {
-  private id: bigint;
-  private people: People;
-  private room: Room;
-
-
-  public getId(): bigint { return this.id; }
-  public getPeople(): People { return this.people; }
-  public getRoom(): Room { return this.room; }
+  public id: bigint;
+  public people: People;
+  public room: Room;
 }
 export class Room {
-  private id: bigint;
-  private level: number;
-  private roomNumber: number;
-  private locked: boolean;
-  private capacity: number;
-  private sex: Sex;
-  private roomConnectors: RoomConnector[];
-
-
-  public getId(): bigint { return this.id; }
-  public getLevel(): number { return this.level; }
-  public getRoomNumber(): number { return this.roomNumber; }
-  public isLocked(): boolean { return this.locked; }
-  public getCapacity(): number { return this.capacity; }
-  public getSex(): Sex { return this.sex; }
-  public getRoomConnectors(): RoomConnector[] { return this.roomConnectors; }
-  public isFull(): boolean { return this.roomConnectors.length >= this.capacity; }
-
-  public setSex(value: Sex): void { this.sex = value; }
-  public setLocked(value: boolean): boolean { if (Number.isInteger(value)) { this.locked = value; } return this.locked; }
-  public setCapacity(value: number): number { if (Number.isInteger(value)) { this.capacity = value; } return this.capacity; }
+  public id: bigint;
+  public level: number;
+  public roomNumber: number;
+  public locked: boolean;
+  public capacity: number;
+  public sex: Sex;
+  public roomConnectors: RoomConnector[];
 }
 export class RoleConnector {
-  private id: bigint;
-  private people: People;
-  private role: Role;
-
-
-  public getId(): bigint { return this.id; }
-  public getPeople(): People { return this.people; }
-  public getRole(): Role { return this.role; }
+  public id: bigint;
+  public people: People;
+  public role: Role;
 }
 export enum RoleType {
   RESIDENT, ADMIN
 }
 export class Role {
-  private id: bigint;
-  private role: RoleType;
-  private roleConnectors: RoomConnector[];
-
-
-  public getId(): bigint { return this.id; }
-  public getRole(): RoleType { return this.role; }
-  public getRoleConnectors(): RoomConnector[] { return this.roleConnectors; }
+  public id: bigint;
+  public role: RoleType;
+  public roleConnectors: RoomConnector[];
 }
 export enum PeopleRequestStatus {
   OK,
@@ -250,23 +198,15 @@ class LabelAssociationData {
     this.label = label;
   }
 
-  private readonly person: People;
-  private readonly label: Label;
-
-
-  public getPeople(): People { return this.person; }
-  public getLabel(): Label { return this.label; }
+  public readonly person: People;
+  public readonly label: Label;
 }
 class ReservationData {
   constructor(person: People, room: Room) {
   }
 
-  private readonly person: People;
-  private readonly room: Room;
-
-
-  public getPeople(): People { return this.person; }
-  public getLabel(): Room { return this.room; }
+  public readonly person: People;
+  public readonly room: Room;
 }
 class RoomModificationData {
   constructor(room: Room, sex: Sex, locked: boolean) {
@@ -275,12 +215,7 @@ class RoomModificationData {
     this.locked = locked;
   }
 
-  private readonly room: Room;
-  private readonly sex: Sex;
-  private readonly locked: boolean;
-
-
-  public getRoom(): Room { return this.room; }
-  public getSex(): Sex { return this.sex; }
-  public isLocked(): boolean { return this.locked; }
+  public readonly room: Room;
+  public readonly sex: Sex;
+  public readonly locked: boolean;
 }
