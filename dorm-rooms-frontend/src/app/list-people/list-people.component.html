@@ -1,4 +1,11 @@
 <section class="people">
+    <input [(ngModel)]="peopleFilterText" type="text">
+    <select [(ngModel)]="peopleFilterType">
+        <option value="name">Név</option>
+        <option value="neptun">Neptun</option>
+        <option value="email">E-mail</option>
+    </select>
+    <button (click)="exportTable()">Export</button>
     <table>
     <tr>
         <th>Név</th>
@@ -7,18 +14,20 @@
         <th>Nem</th>
         <th>Eszközök</th>
     </tr>
-    <tr *ngFor = "let person of people">
+    <ng-template ngFor let-person [ngForOf]="people">
+    <tr *ngIf="isPersonMachesFilter(person)">
         <td>{{person.name}}</td>
         <td>{{person.neptunId}}</td>
         <td>{{person.email}}</td>
-        <td>Yes</td>
+        <td>{{person.sex.toString()}}</td>
         <td>
             <div class="admin_menu">
-                <button class="edit_button"><i class="fa fa-pencil fa-lg"></i></button>
+                <button class="edit_button" (click)="editPerson(person)"><i class="fa fa-pencil fa-lg"></i></button>
                 <button class="make_admin_button"><i class="fa fa-user-circle fa-lg"></i></button>
                 <button class="remove_button"><i class="fa fa-trash fa-lg"></i></button>
             </div>
         </td>
     </tr>
+    </ng-template>
     </table>
 </section>

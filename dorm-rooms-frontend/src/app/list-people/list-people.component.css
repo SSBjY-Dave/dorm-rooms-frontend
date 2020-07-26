@@ -8,6 +8,7 @@ tr:hover .admin_menu {
 }
 
 table {
+    min-width: 80em;
     border-collapse: collapse;
 }
 

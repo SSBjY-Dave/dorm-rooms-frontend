@@ -8,13 +8,15 @@ import { ListPeopleComponent } from './list-people/list-people.component';
 import { DormService } from './dorm.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { EditWindowComponent } from './edit-window/edit-window.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ReservationComponent,
     InfoBoxComponent,
-    ListPeopleComponent
+    ListPeopleComponent,
+    EditWindowComponent
   ],
   imports: [
     BrowserModule,
