@@ -7,6 +7,7 @@ import { InfoBoxComponent } from './info-box/info-box.component';
 import { ListPeopleComponent } from './list-people/list-people.component';
 import { DormService } from './dorm.service';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [
     DormService
