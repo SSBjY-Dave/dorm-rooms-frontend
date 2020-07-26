@@ -61,7 +61,14 @@ export class DormService {
   }
 
   // Role association operations
-  public associateRole: Observable<any>
+  public associateRole(person: People, roleType: RoleType): Observable<RoleAssociationRequestStatus> {
+    return this.startPostRequest<RoleAssociationRequestStatus>(
+      Urls.ROLE_ASSOCIATION_ASSOCIATE, new RoleAssociationData(person, roleType));
+  }
+  public disassociateRole(person: People, roleType: RoleType): Observable<RoleAssociationRequestStatus> {
+    return this.startPostRequest<RoleAssociationRequestStatus>(
+      Urls.ROLE_ASSOCIATION_DISASSOCIATE, new RoleAssociationData(person, roleType));
+  }
 
   // Reservation operations
   public applyForRoom(room: Room): Observable<ReservationRequestStatus> {
@@ -200,20 +207,29 @@ export enum RoomRequestStatus {
   ROOM_NUMBER_INVALID, ROOM_NUMBER_DOES_NOT_EXISTS,
   LOCK_STATE_INVALID
 }
-class LabelAssociationData {
-  constructor(person: People, label: Label) {
+class RoleAssociationData {
+  constructor(person: People, roleType: RoleType) {
     this.person = person;
-    this.label = label;
+    this.roleType = roleType;
   }
 
   public readonly person: People;
+  public readonly roleType: RoleType;
+}
+class LabelAssociationData {
+  constructor(person: People, label: Label) {
+    this.people = person;
+    this.label = label;
+  }
+
+  public readonly people: People;
   public readonly label: Label;
 }
 class ReservationData {
   constructor(person: People, room: Room) {
   }
 
-  public readonly person: People;
+  public readonly people: People;
   public readonly room: Room;
 }
 class RoomModificationData {
