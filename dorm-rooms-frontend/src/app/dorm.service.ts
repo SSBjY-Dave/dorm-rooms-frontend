@@ -97,6 +97,9 @@ export class DormService {
     return this.startPostRequest<RoomRequestStatus>(
       Urls.ROOM_SET_LOCK_STATE, new RoomModificationData(room, sex, room.locked));
   }
+  public getAllRooms(): Observable<Room[]> {
+    return this.startGetRequest<Room[]>(Urls.ROOM_GET_ALL);
+  }
 
   private getRequestHeader(): any {
     return {Authorization: 'Basic ' + this.authorizationToken, 'Content-Type': 'application/json;charset=UTF-8'};

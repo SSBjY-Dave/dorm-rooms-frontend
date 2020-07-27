@@ -1,1 +1,25 @@
-<p>reservation works!</p>
+<section class="view_normal">
+  <section class="building">
+    <ng-template ngFor let-floor [ngForOf]="building">
+      <article class="floor" style="background-image: url('assets/building/adk/floor_{{floor.level}}.svg')">
+        <ng-template ngFor let-room [ngForOf]="floor.roomWrappers">
+          <div>
+            <span>{{room.level}}</span>
+            <ul>
+              <ng-template ngFor let-rc [ngForOf]="room.room.roomConnectors">
+                <li>{{rc.people.name}}</li>
+              </ng-template>
+            </ul>
+          </div>
+        </ng-template>
+      </article>
+    </ng-template>
+  </section>
+  <section class="building_level_selector">
+    <div class="selector_overlay"></div>
+    <div class="levels"></div>
+  </section>
+</section>
+
+<section id="view_simple">
+</section>
