@@ -19,12 +19,18 @@ export class Urls {
   public static PERSON_GET_ALL_ADMIN  = Urls.PERSON_GET_ALL + '/admin';
   public static PERSON_GET_CURRENT    = Urls.PERSON_CONTROLLER + '/getCurrentPerson';
 
+
   private static RESERVATION_CONTROLLER       = Urls.API_PREFIX + '/reservation';
   public static RESERVATION_APPLY_FOR_ROOM    = Urls.RESERVATION_CONTROLLER + '/applyForRoom';
   public static RESERVATION_LEAVE_ROOM        = Urls.RESERVATION_CONTROLLER + '/leaveRoom';
   public static RESERVATION_CHANGE_ROOM       = Urls.RESERVATION_CONTROLLER + '/changeRoom';
   public static RESERVATION_ASSIGN_TO_ROOM    = Urls.RESERVATION_CONTROLLER + '/assignToRoom';
   public static RESERVATION_CLEAR_ROOM        = Urls.RESERVATION_CONTROLLER + '/clearRoom';
+
+
+  public static ROLE_ASSOCIATION_CONTROLLER   = Urls.API_PREFIX + '/roleAssociation';
+  public static ROLE_ASSOCIATION_ASSOCIATE    = Urls.ROLE_ASSOCIATION_CONTROLLER + '/associate';
+  public static ROLE_ASSOCIATION_DISASSOCIATE = Urls.ROLE_ASSOCIATION_CONTROLLER + '/disassociate';
 
   private static ROOM_CONTROLLER        = Urls.API_PREFIX + '/room';
   public static ROOM_SET_LOCK_STATE     = Urls.ROOM_CONTROLLER + '/setLockState';
