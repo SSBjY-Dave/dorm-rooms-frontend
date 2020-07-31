@@ -3,6 +3,43 @@
     transition: opacity 500ms;
 }
 
+.searchField {
+    position: absolute;
+    right: 0em;
+    top: 0em;
+}
+
+.admin_menu button {
+    width: 2rem;
+}
+
+.admin_menu button i,
+.admin_menu button span {
+    font-size: 1.15rem;
+}
+
+.admin_button {
+    position: relative;
+}
+
+.admin_button span,
+.admin_button i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.admin_button span {
+    margin: -11px 0 0 -3.791px;
+    font-weight: bolder;
+    color: darkred;
+    text-shadow: 1px 1px 2px black;
+}
+
+.admin_button i {
+    margin: -6.666px 0 0 -9.198px;
+}
+
 tr:hover .admin_menu {
     opacity: 1;
 }

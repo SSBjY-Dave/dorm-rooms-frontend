@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import { DormService, People } from '../dorm.service';
 
 @Component({
   selector: 'app-edit-window',
@@ -7,29 +8,35 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EditWindowComponent implements OnInit {
 
-  constructor() { }
+  private dormService: DormService;
+  @Input() person: People;
+  @Output() closeWindow = new EventEmitter();
+  public temp: People;
 
-  //public person People;
-
-  ngOnInit(): void {
-
+  constructor(dormService: DormService) { 
+    this.dormService = dormService;
   }
-
-  openPanel(): void {
-    document.getElementById("panel").style.display="block";
+  
+  ngOnInit(): void {
+    this.temp = JSON.parse(JSON.stringify(this.person));
   }
 
   save(): void {
-    console.log("Változtatások elmentve!");
-    document.getElementById("panel").style.display="none";
+    this.dormService.modifyPerson(this.temp).subscribe(status => {
+      //TODO: handle status messages
+      console.log(status);
+    });
+    this.closeWindow.emit();
   }
 
   cancel(): void {
     console.log("Változtatások elvetve!");
-    document.getElementById("panel").style.display="none";
+    this.closeWindow.emit();
   }
 
   reset(): void {
+    console.log(this.temp);
+    this.temp = JSON.parse(JSON.stringify(this.person));
     console.log("Adatok alaphelyzetbe állítva");
   }
 

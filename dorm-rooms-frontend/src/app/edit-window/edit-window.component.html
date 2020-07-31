@@ -1,12 +1,12 @@
 <div id = "panel">
-    <form class = "edit_form">
-        Név: <input class = "name_editor" type="text">
-        Neptun: <input class = "neptun_editor" type="text">
-        E-mail: <input class = "email_editor" type="text">
+    <div class = "edit_form">
+        Név: <input id = "name_editor" type="text" [(ngModel)]="temp.name">
+        Neptun: <input id = "neptun_editor" type="text" [(ngModel)]="temp.neptunId">
+        E-mail: <input id = "email_editor" type="text" [(ngModel)]="temp.email">
         <br><br>
         <button (click)="save()">Mentés</button>
         <button (click)="cancel()">Mégse</button>
         <button (click)="reset()">Visszaállítás</button>
-    </form>
+    </div>
 <div class = "overlay"></div>
 </div>
