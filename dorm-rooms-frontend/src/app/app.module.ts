@@ -9,13 +9,15 @@ import { DormService } from './dorm.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { EditWindowComponent } from './edit-window/edit-window.component';
+import { NotificationBoxComponent } from './notification-box/notification-box.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ReservationComponent,
     InfoBoxComponent,
-    ListPeopleComponent,
+    ListPeopleComponent
+    NotificationBoxComponent
     EditWindowComponent
   ],
   imports: [
