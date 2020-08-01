@@ -8,6 +8,7 @@ import { ListPeopleComponent } from './list-people/list-people.component';
 import { DormService } from './dorm.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { NotificationBoxComponent } from './notification-box/notification-box.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { FormsModule } from '@angular/forms';
     ReservationComponent,
     InfoBoxComponent,
     ListPeopleComponent
+    NotificationBoxComponent
   ],
   imports: [
     BrowserModule,
