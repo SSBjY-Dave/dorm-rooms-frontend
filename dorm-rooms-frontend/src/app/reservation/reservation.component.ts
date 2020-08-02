@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {DormService, Room} from '../dorm.service';
+import {DormService, People, Room} from '../dorm.service';
 import {HttpClient} from '@angular/common/http';
 
 @Component({
@@ -9,8 +9,12 @@ import {HttpClient} from '@angular/common/http';
 })
 export class ReservationComponent implements OnInit {
   private dormService: DormService;
+  private domStuffInitialized: boolean;
+
   private http: HttpClient;
+  public currentPerson: People;
   public building: Level[];
+  public currentFloor = 0;
 
   constructor(dormService: DormService, http: HttpClient) {
     this.dormService = dormService;
@@ -18,7 +22,33 @@ export class ReservationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.dormService.getCurrentPerson().subscribe(p => this.currentPerson = p);
     this.loadRooms();
+  }
+
+  public fullRoomNumber(level: number, roomNumber: number): string {
+    return level + ((roomNumber < 10) ? '0' : '') + roomNumber;
+  }
+
+  public domRenderFinished(): void {
+    this.setDefaults();
+    this.attachEventListeners();
+  }
+
+  private setDefaults(): void {
+    const floors = document.getElementsByClassName('floor');
+    if (floors.length === 0 || this.domStuffInitialized) { return; }
+    floors[0].classList.add('active');
+    floors[1].classList.add('offset-top');
+  }
+
+  private attachEventListeners(): void {
+    const floors = document.getElementsByClassName('floor');
+    if (floors.length === 0 || this.domStuffInitialized) { return; }
+    this.domStuffInitialized = true;
+    document.addEventListener('wheel', event => {
+      this.showFloor(this.currentFloor + ((event.deltaY > 0) ? 1 : -1));
+    });
   }
 
   private loadRooms(): void {
@@ -42,8 +72,8 @@ export class ReservationComponent implements OnInit {
               layout[i].rooms[j].offset.y,
             ),
             new Size(
-              layout[i].rooms[j].size.x,
-              layout[i].rooms[j].size.y,
+              layout[i].rooms[j].size.width,
+              layout[i].rooms[j].size.height,
             ),
             rooms[roomIndex]
           )
@@ -51,6 +81,61 @@ export class ReservationComponent implements OnInit {
       }
     }
     this.building = levels;
+  }
+
+  public calculateSelectorItemLineHeight(): string {
+    const buildingLevelSelectorHeight = getComputedStyle(document.getElementById('building_level_selector')).height;
+    return this.convertPxToRem(this.removeUnit(buildingLevelSelectorHeight) / this.building.length);
+  }
+
+  public convertPxToRem(value: number): string {
+    return value / this.removeUnit(getComputedStyle(document.getElementsByTagName('html')[0]).fontSize) + 'rem';
+  }
+  public calculateRoomX(baseOffset: number): number {
+    return (this.removeUnit(getComputedStyle(document.getElementById('building')).width) * baseOffset) / 880;
+  }
+
+  public calculateRoomY(baseOffset: number): number {
+    return (this.removeUnit(getComputedStyle(document.getElementById('building')).height) * baseOffset) / 1128;
+  }
+
+  public removeUnit(value: string): number {
+    return parseFloat(value);
+  }
+
+  public showFloor(floorIndex: number): void {
+    // if ($("#page_overlay").hasClass("active")) return;
+    const floors = document.getElementsByClassName('floor');
+    if (floorIndex < 0 || floors.length <= floorIndex) { return; }
+    // warning suspended because HTMLTagCollection doesn't have an iterator
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < floors.length; ++i) {
+      floors[i].classList.remove('active');
+      floors[i].classList.remove('offset-top');
+      floors[i].classList.remove('offset-bottom');
+    }
+
+    if (floorIndex !== 0) {
+      floors[floorIndex - 1].classList.add('offset-bottom');
+    }
+    floors[floorIndex].classList.add('active');
+
+    if (floorIndex !== floors.length - 1) {
+      floors[floorIndex + 1].classList.add('offset-top');
+    }
+
+    let floorContainerTopOffset;
+    if (floorIndex === 0) { floorContainerTopOffset = 30; }
+    else { floorContainerTopOffset = -30 / floors.length * floorIndex; }
+
+    document.getElementById('building').style.top = floorContainerTopOffset + '%';
+
+    const levelSelectorHeight = this.removeUnit(getComputedStyle(document.getElementById('building_level_selector')).height);
+    const levelSelectorTopOffset = this.convertPxToRem(levelSelectorHeight / floors.length * floorIndex);
+    // ts-ignore is needed because angular's compiler is retarded and thinks the style property doesn't exists
+    // @ts-ignore
+    document.getElementsByClassName('selector_overlay')[0].style.top = levelSelectorTopOffset;
+    this.currentFloor = floorIndex;
   }
 }
 class Level {
@@ -73,14 +158,26 @@ class RoomWrapper {
     this.size = size;
     this.room = room;
   }
+
+  get paddedRoomNumber(): string {
+    return ((this.roomNumber < 10) ? '0' : '') + this.roomNumber.toString();
+  }
+
+  get residents(): People[] {
+    const residents = [];
+    for (const rc of this.room.roomConnectors) {
+      residents.push(rc.people);
+    }
+    return residents;
+  }
 }
 class Point2D {
   public x: number;
   public y: number;
 
   constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
+    this.x = Number(x);
+    this.y = Number(y);
   }
 }
 class Size {
@@ -88,7 +185,7 @@ class Size {
   public height: number;
 
   constructor(width: number, height: number) {
-    this.width = width;
-    this.height = height;
+    this.width = Number(width);
+    this.height = Number(height);
   }
 }

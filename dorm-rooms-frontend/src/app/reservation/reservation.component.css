@@ -1,0 +1,202 @@
+@media (max-height: 600px) {
+  #view_simple {
+    display: block;
+  }
+  #view_normal {
+    display: none;
+  }
+}
+@media (min-height: 601px) {
+  #view_simple {
+    display: none;
+  }
+  #view_normal {
+    display: block;
+  }
+}
+#building {
+  margin: -35.25rem 0 0 -36.7845rem;
+  width: 73.571rem;
+  height: 94.286rem;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transition: top 250ms;
+  display: block;
+}
+.floor {
+  margin: -90rem auto 0 auto;
+  position: relative;
+  height: 100%;
+  width: 73.571rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  transform:matrix(1.00,0.00,-0.50,0.40,0,0);
+  -ms-transform:matrix(1.00,0.00,-0.50,0.40,0,0);
+  -webkit-transform:matrix(1.00,0.00,-0.50,0.40,0,0);
+
+  transition: transform 250ms, margin 250ms;
+}
+.floor.active {
+   margin-top: -115rem;
+   height: 94.286rem;
+   width: 100%;
+   font-size: 10px;
+   transform: matrix(1, 0, 0, 1, 0, 0);
+ }
+.floor.offset-top {
+  margin-top: -25rem;
+}
+.floor.offset-bottom {
+  margin-bottom: 90rem;
+}
+.floor:first-child {
+  margin-top: 0;
+}
+.floor div {
+  position: absolute;
+  background: rgba(109,149,206,0.6);
+  transition: background 250ms;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+}
+.floor.active div:hover {
+  cursor: pointer;
+  background: rgba(44,73,119,0.8);
+}
+.floor div span {
+  font-size: 1.7em;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+  display: block;
+  text-align: center;
+}
+.floor div ul {
+  text-align: center;
+}
+.floor div ul li {
+  font-size: 1.5em;
+  line-height: 1em;
+  color: #fff;
+  list-style: none;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#building_level_selector {
+  position: fixed;
+  top: 50%;
+  right: 5%;
+  height: 50rem;
+  width: 15rem;
+  margin: -25rem 0 0 0;
+  background: linear-gradient(to bottom, rgba(109,179,242,1) 0%,rgba(30,105,222,1) 100%);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+
+  border-radius: 3rem;
+}
+#building_level_selector .selector_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 10%;
+  width: 100%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%,rgba(255,255,255,0.3) 100%);
+  border-radius: 3rem;
+  z-index: +10;
+  transition: top 250ms;
+}
+#building_level_selector .selector_levels {
+  text-align: center;
+  font-size: 3rem;
+  cursor: pointer;
+  color: #fff;
+}
+#building_level_selector .selector_levels div:first-child {
+  border-radius: 3rem 3rem 0 0;
+}
+#building_level_selector .selector_levels div:last-child {
+  border-radius: 0 0 3rem 3rem;
+}
+#building_level_selector .selector_levels div:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+#view_simple {
+  font-size: 3rem;
+}
+#view_simple table {
+  width: 80%;
+  border: 5px solid #000;
+  margin: 20px auto 0 auto;
+  border-collapse: collapse;
+  background: linear-gradient(to bottom, rgba(109,179,242,1) 0%,rgba(30,105,222,1) 100%);
+}
+#view_simple table:first-child {
+  margin-top: 3em;
+}
+#view_simple table:last-child {
+  margin-bottom: 4em;
+}
+#view_simple table caption {
+  font-size: 4rem;
+}
+#view_simple table th {
+  height: 4rem;
+  line-height: 4rem;
+  background: rgba(0, 0, 0, 0.4);
+}
+#view_simple table td {
+  height: 3em;
+  transition: background 250ms;
+}
+#view_simple table tr:nth-child(even) td{
+  background: rgba(0, 0, 0, 0.1);
+}
+#view_simple table tr:nth-child(odd) td{
+  background: rgba(0, 0, 0, 0.2);
+}
+#view_simple table tr:hover td {
+  background: rgba(0, 0, 0, 0.3);
+}
+#view_simple table th,
+#view_simple table td {
+  text-align: center;
+}
+#view_simple table th:first-child,
+#view_simple table td:first-child {
+  width: 10%;
+}
+#view_simple table th:last-child,
+#view_simple table td:last-child {
+  width: 20%;
+}
+#view_simple td div {
+  text-align: center;
+}
+#view_simple td:last-child button {
+  height: 2em;
+  padding: 0.4rem 1rem;
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%);
+  border: 0;
+  border-radius: 0.2em;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 250ms;
+  cursor: pointer;
+}
+#view_simple td:last-child button:hover {
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.7);
+}

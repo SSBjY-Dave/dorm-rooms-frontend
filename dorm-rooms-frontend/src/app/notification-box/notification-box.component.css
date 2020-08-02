@@ -1,0 +1,9 @@
+div {
+  position: absolute;
+  bottom: 5rem;
+  right: 5rem;
+  font-size: 3rem;
+  padding: 5rem;
+  max-width: 100rem;
+  border-radius: 2rem;
+}
