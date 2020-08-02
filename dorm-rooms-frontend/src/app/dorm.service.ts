@@ -123,11 +123,13 @@ export class People {
   public sex: Sex;
   public labelConnectors: LabelConnector[];
   public roomConnector: RoomConnector;
-  public roleConnector: RoleConnector[];
+  public roleConnectors: RoleConnector[];
 
   get isAdmin(): boolean {
-    console.log(this.roleConnector.find(rc => rc.role.role === RoleType.ADMIN));
-    return this.roleConnector.find(rc => rc.role.role === RoleType.ADMIN) !== null;
+    // ERROR: This condition will always return 'false' since the types 'string' and 'RoleType' have no overlap.
+    // This is not true so fuck you angular
+    // @ts-ignore
+    return this.roleConnectors.find(rc => RoleType[rc.role.role] === RoleType.ADMIN) !== undefined;
   }
 }
 export class LabelConnector {
