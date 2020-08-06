@@ -1555,17 +1555,6 @@
 				}
 			},
 			{
-				"number": 3,
-				"offset": {
-					"x": 0,
-					"y": 0
-				},
-				"size": {
-					"width": 0,
-					"height": 0
-				}
-			},
-			{
 				"number": 4,
 				"offset": {
 					"x": 15,

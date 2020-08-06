@@ -1,1 +1,73 @@
-<p>reservation works!</p>
+<section id="view_normal">
+  <section class="building" id="building">
+    <ng-template ngFor let-floor [ngForOf]="building" let-i="index">
+      <article class="floor" style="background-image: url('assets/building/adk/floor_{{floor.level}}.svg'); z-index: {{ 99 - i}}">
+        <ng-template ngFor let-room [ngForOf]="floor.roomWrappers">
+          <div
+            [style.top]="convertPxToRem(calculateRoomY(room.offset.y))"
+            [style.left]="convertPxToRem(calculateRoomY(room.offset.x))"
+            [style.width]="convertPxToRem(calculateRoomX(room.size.width))"
+            [style.height]="convertPxToRem(calculateRoomY(room.size.height))"
+            (click)="applyForRoom(room, false)">
+            <!--<div [hidden]="!room.operationPending" class="loading-ring"><div></div><div></div><div></div><div></div></div>-->
+            <span>{{fullRoomNumber(floor.level, room.roomNumber)}}</span>
+            <ul>
+              <ng-template ngFor let-rc [ngForOf]="room.room.roomConnectors">
+                <li>{{rc.people.name}}</li>
+              </ng-template>
+            </ul>
+          </div>
+        </ng-template>
+      </article>
+    </ng-template>
+  </section>
+  <section id="building_level_selector">
+    <div class="selector_overlay"></div>
+    <div class="selector_levels">
+      <ng-template ngFor let-floor [ngForOf]="building" let-i="index">
+        <div [style.lineHeight]="calculateSelectorItemLineHeight()" (click)="showFloor(i)">{{floor.level}}. em</div>
+      </ng-template>
+    </div>
+  </section>
+</section>
+
+<section id="view_simple">
+  <ng-template ngFor let-floor [ngForOf]="building">
+    <table>
+      <caption>{{floor.level}}. emelet</caption>
+      <thead>
+        <tr>
+          <th>Szoba</th>
+          <th>Lakók</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-room [ngForOf]="floor.roomWrappers">
+          <tr>
+            <td>{{room.paddedRoomNumber}}</td>
+            <td>
+              <ng-template ngFor let-person [ngForOf]="room.residents">
+                <div>{{person.name}}</div>
+              </ng-template>
+            </td>
+            <td>
+              <button *ngIf="!isPersonInRoom(room)" (click)="applyForRoom(room, false)">Jelentkezés</button>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
+  </ng-template>
+</section>
+
+{{domRenderFinished()}}
+<ng-template [ngIf]="reservationOverlayRoom !== undefined && reservationOverlayRoom !== null">
+  <div class="page_overlay page_overlay_hidden">
+    <div>
+      <p>Szeretnél a {{reservationOverlayRoom.room.id}}-{{roomNumberToFuckingHungarianRagozottForma(reservationOverlayRoom.room.id.toString())}} szobába {{currentPerson.hasRoom ? 'átjelentkezni' : 'jelentkezni' }}?</p>
+      <button (click)="applyForRoom(reservationOverlayRoom, true)">Igen</button>
+      <button (click)="hidePageOverlay()">Nem</button>
+    </div>
+  </div>
+</ng-template>
