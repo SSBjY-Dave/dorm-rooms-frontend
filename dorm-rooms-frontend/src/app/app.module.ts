@@ -17,7 +17,7 @@ import { NotificationBoxComponent } from './notification-box/notification-box.co
     ReservationComponent,
     InfoBoxComponent,
     ListPeopleComponent,
-    NotificationBoxComponent
+    NotificationBoxComponent,
     EditWindowComponent
   ],
   imports: [

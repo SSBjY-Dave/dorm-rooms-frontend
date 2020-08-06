@@ -21,6 +21,9 @@
   font-family: 'Roboto', sans-serif;
   box-sizing: border-box;
 }
+body {
+  font-size: 3rem;
+}
 .bg-highlight {
   background: #00008b;
 }
@@ -91,4 +94,8 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.invisible {
+  visibility: hidden;
 }

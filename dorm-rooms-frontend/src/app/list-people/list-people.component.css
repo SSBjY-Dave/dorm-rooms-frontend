@@ -10,34 +10,29 @@
 }
 
 .admin_menu button {
-    width: 2rem;
+    width: 2em;
+    position: relative;
 }
 
 .admin_menu button i,
 .admin_menu button span {
-    font-size: 1.15rem;
-}
-
-.admin_button {
-    position: relative;
-}
-
-.admin_button span,
-.admin_button i {
+    font-size: 1.15em;
     position: absolute;
-    top: 50%;
-    left: 50%;
+    display: block;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    line-height: 100%;
 }
 
-.admin_button span {
-    margin: -11px 0 0 -3.791px;
+.admin_menu button span {
     font-weight: bolder;
     color: darkred;
     text-shadow: 1px 1px 2px black;
-}
-
-.admin_button i {
-    margin: -6.666px 0 0 -9.198px;
 }
 
 tr:hover .admin_menu {
@@ -52,7 +47,7 @@ table {
 table, th, td {
     padding-top: 1em 1.5em 1em 1.5em;
     text-align: center;
-    transition: background 500ms; 
+    transition: background-color 500ms; 
 }
 
 tr:hover td {

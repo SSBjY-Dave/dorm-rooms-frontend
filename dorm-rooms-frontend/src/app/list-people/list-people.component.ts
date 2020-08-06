@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
 import { DormService, People, PeopleRequestStatus, RoleType } from '../dorm.service';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-list-people',
@@ -34,14 +35,12 @@ export class ListPeopleComponent implements OnInit {
 
   ngOnInit(): void {
     this.dormService.getAllPeopleAdmin().subscribe(p => {
-      this.people = p; 
+      this.people = []; 
+      for (const person of p) {
+        this.people.push(Object.assign(new People(), person));
+      } 
       console.log("data arrived")
     });
-  }
-
-  public isAdmin(person: People): boolean {
-    console.log(person.roleConnector);
-    return person.roleConnector.find(rc => rc.role.role === RoleType.ADMIN) !== null;
   }
 
   isPersonMachesFilter(person: People): boolean {
@@ -72,9 +71,11 @@ export class ListPeopleComponent implements OnInit {
       this.dormService.deletePerson(person).subscribe(status => {
         // if (status[0] === PeopleRequestStatus.OK){
         //   alert("Felhasználó törölve!");
+        //   AppComponent.messageEvent.emit("Személy törölve!");
         // }
         // else {
         //   alert("Törlés sikertelen!");
+        //   AppComponent.messageEvent.emit("Törlés sikertelen!");
         //   console.log(status);
         // }
         // const personIndex = this.people.findIndex(p => p === person);
@@ -89,7 +90,12 @@ export class ListPeopleComponent implements OnInit {
   }
 
   setPersonAdmin(person: People): void{
-
+    if (person.isAdmin){
+      this.dormService.disassociateRole(person, RoleType.ADMIN).subscribe(fazs => console.log(fazs));
+    }
+    else {
+      this.dormService.associateRole(person, RoleType.ADMIN).subscribe(fazs => console.log(fazs));
+    }
   }
 
   exportTable(): void{

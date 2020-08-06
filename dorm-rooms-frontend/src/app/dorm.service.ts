@@ -18,11 +18,11 @@ export class DormService {
 
 
   // Label association operations
-  public disassociate(person: People, label: Label): Observable<LabelAssociationRequestStatus> {
+  public disassociateLabel(person: People, label: Label): Observable<LabelAssociationRequestStatus> {
     return this.startPostRequest<LabelAssociationRequestStatus>(
       Urls.LABEL_ASSOCIATION_DISASSOCIATE, new LabelAssociationData(person, label));
   }
-  public associate(person: People, label: Label): Observable<LabelAssociationRequestStatus> {
+  public associateLabel(person: People, label: Label): Observable<LabelAssociationRequestStatus> {
     return this.startPostRequest<LabelAssociationRequestStatus>(
       Urls.LABEL_ASSOCIATION_ASSOCIATE, new LabelAssociationData(person, label));
   }

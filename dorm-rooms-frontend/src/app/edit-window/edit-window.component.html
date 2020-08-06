@@ -2,11 +2,16 @@
     <div class = "edit_form">
         Név: <input id = "name_editor" type="text" [(ngModel)]="temp.name">
         Neptun: <input id = "neptun_editor" type="text" [(ngModel)]="temp.neptunId">
-        E-mail: <input id = "email_editor" type="text" [(ngModel)]="temp.email">
+        E-mail: <input id = "email_editor" type="email" [(ngModel)]="temp.email">
         <br><br>
-        <button (click)="save()">Mentés</button>
-        <button (click)="cancel()">Mégse</button>
-        <button (click)="reset()">Visszaállítás</button>
+        <ng-template ngFor let-label [ngForOf]="labels" class = "label_container">
+            <div class = "label_button" (click)="toggleLabel(label)" >{{label.name}}</div>
+        </ng-template>
+        <div class = "button_container">
+            <div class = "button" (click)="save()">Mentés</div>
+            <div class = "button" (click)="cancel()">Mégse</div>
+            <div class = "button" (click)="reset()">Visszaállítás</div>
+        </div>
     </div>
-<div class = "overlay"></div>
+<div class = "overlay" (click)="cancel()"></div>
 </div>
