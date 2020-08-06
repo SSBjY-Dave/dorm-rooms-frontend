@@ -54,7 +54,7 @@
 .floor:first-child {
   margin-top: 0;
 }
-.floor div {
+.floor>div {
   position: absolute;
   background: rgba(109,149,206,0.6);
   transition: background 250ms;
@@ -66,21 +66,21 @@
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
 }
-.floor.active div:hover {
+.floor.active>div:hover {
   cursor: pointer;
   background: rgba(44,73,119,0.8);
 }
-.floor div span {
+.floor>div span {
   font-size: 1.7em;
   color: #fff;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
   display: block;
   text-align: center;
 }
-.floor div ul {
+.floor>div ul {
   text-align: center;
 }
-.floor div ul li {
+.floor>div ul li {
   font-size: 1.5em;
   line-height: 1em;
   color: #fff;
@@ -199,4 +199,50 @@
 }
 #view_simple td:last-child button:hover {
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.7);
+}
+.page_overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: +10;
+  transition: opacity 250ms;
+}
+.page_overlay>div {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100rem;
+  height: 20rem;
+  margin: auto;
+  background: white;
+  padding: 3rem;
+  border-radius: 3rem;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+.page_overlay>div p {
+  font-size: 4rem;
+  text-align: justify;
+  margin-bottom: 4rem;
+}
+.page_overlay>div button {
+  padding: 1rem;
+  border-style: solid;
+  border-radius: 1rem;
+  margin-left: 2rem;
+  cursor: pointer;
+  transition: border-radius 250ms;
+}
+.page_overlay>div button:active {
+  border-radius: 4rem;
+}
+.page_overlay_hidden {
+  z-index: -500;
+  opacity: 0;
 }

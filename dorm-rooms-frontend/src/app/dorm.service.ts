@@ -126,6 +126,15 @@ export class DormService {
     }
     return this.createObservableFromCachedData<Room[]>(this.cachedDormData.roomsAll);
   }
+  public canApplyForRoom(room: Room, currentPerson: People): boolean {
+    // ERROR: This condition will always return 'false' since the types 'string' and 'RoleType' have no overlap.
+    // This is not true so fuck you angular
+    // @ts-ignore
+    return  (room.sex === Sex[Sex.ANY] || room.sex === currentPerson.sex) &&
+            (room.id !== currentPerson.roomConnector.room.id) &&
+            (room.roomConnectors.length < room.capacity) &&
+            (!room.locked);
+  }
 
   private getRequestHeader(): any {
     return {Authorization: 'Basic ' + this.authorizationToken, 'Content-Type': 'application/json;charset=UTF-8'};
@@ -175,6 +184,10 @@ export class People {
     // This is not true so fuck you angular
     // @ts-ignore
     return this.roleConnectors.find(rc => RoleType[rc.role.role] === RoleType.ADMIN) !== undefined;
+  }
+
+  get hasRoom(): boolean {
+    return this.roomConnector !== undefined && this.roomConnector !== null;
   }
 }
 export class LabelConnector {

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {DormService, People, Room} from '../dorm.service';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {DormService, People, Room, Sex} from '../dorm.service';
 import {HttpClient} from '@angular/common/http';
 
 @Component({
@@ -8,6 +8,7 @@ import {HttpClient} from '@angular/common/http';
   styleUrls: ['./reservation.component.css']
 })
 export class ReservationComponent implements OnInit {
+  private changeDetectorReference: ChangeDetectorRef;
   private dormService: DormService;
   private domStuffInitialized: boolean;
 
@@ -16,14 +17,43 @@ export class ReservationComponent implements OnInit {
   public building: Level[];
   public currentFloor = 0;
 
-  constructor(dormService: DormService, http: HttpClient) {
+  public reservationOverlayRoom: RoomWrapper;
+
+  constructor(changeDetectorReference: ChangeDetectorRef, dormService: DormService, http: HttpClient) {
+    this.changeDetectorReference = changeDetectorReference;
     this.dormService = dormService;
     this.http = http;
   }
 
   ngOnInit(): void {
-    this.dormService.getCurrentPerson().subscribe(p => this.currentPerson = p);
+    this.dormService.getCurrentPerson().subscribe(p => this.currentPerson = Object.assign(new People(), p));
     this.loadRooms();
+  }
+
+  public applyForRoom(roomWrapper: RoomWrapper, fromOverlay: boolean): void {
+    if (!this.dormService.canApplyForRoom(roomWrapper.room, this.currentPerson)) {
+      if (fromOverlay) {
+        this.hidePageOverlay();
+      }
+      return;
+    }
+    if (!fromOverlay) {
+      this.showPageOverlay(roomWrapper);
+      return;
+    }
+    this.hidePageOverlay();
+
+    if (!this.currentPerson.hasRoom) {
+      roomWrapper.operationPending = true;
+      this.dormService.applyForRoom(roomWrapper.room).subscribe(res => console.log(res));
+    } else if (!this.isPersonInRoom(roomWrapper)) {
+      this.dormService.changeRoom(roomWrapper.room).subscribe(res => console.log(res));
+    }
+  }
+
+  public isPersonInRoom(roomWrapper: RoomWrapper): boolean {
+    return  this.currentPerson.roomConnector !== undefined && this.currentPerson.roomConnector !== null &&
+            this.currentPerson.roomConnector.room.id === roomWrapper.room.id;
   }
 
   public fullRoomNumber(level: number, roomNumber: number): string {
@@ -33,6 +63,22 @@ export class ReservationComponent implements OnInit {
   public domRenderFinished(): void {
     this.setDefaults();
     this.attachEventListeners();
+  }
+
+  public showPageOverlay(roomWrapper: RoomWrapper): void {
+    this.reservationOverlayRoom = roomWrapper;
+    this.changeDetectorReference.detectChanges();
+    const pageOverlay = document.getElementsByClassName('page_overlay')[0];
+    setTimeout((overlay) => overlay.classList.remove('page_overlay_hidden'), 1, pageOverlay);
+  }
+
+  public hidePageOverlay(): void {
+    const pageOverlay = document.getElementsByClassName('page_overlay')[0];
+    pageOverlay.classList.add('page_overlay_hidden');
+    setTimeout((self: ReservationComponent) => {
+      self.reservationOverlayRoom = null;
+      self.changeDetectorReference.detectChanges();
+    }, 250, this);
   }
 
   private setDefaults(): void {
@@ -137,6 +183,28 @@ export class ReservationComponent implements OnInit {
     document.getElementsByClassName('selector_overlay')[0].style.top = levelSelectorTopOffset;
     this.currentFloor = floorIndex;
   }
+
+  public roomNumberToFuckingHungarianRagozottForma(roomNumber: string): string {
+    let prefix = '';
+    let suffix = '';
+    switch (roomNumber[0]) {
+      case '1': case '5':
+        prefix += 'az'; break;
+      default:
+        prefix += 'a'; break;
+    }
+    switch (roomNumber.substr(1, 2)) {
+      case '00':
+        suffix += 'ás'; break;
+      case '03': case '08':
+        suffix += 'as'; break;
+      case '05': case '15':
+        suffix += 'ös'; break;
+      default:
+        suffix += 'es'; break;
+    }
+    return prefix + ' ' + roomNumber + '-' + suffix;
+  }
 }
 class Level {
   public level: number;
@@ -151,6 +219,7 @@ class RoomWrapper {
   public offset: Point2D;
   public size: Size;
   public room: Room;
+  public operationPending = false;
 
   constructor(roomNumber: number, offset: Point2D, size: Size, room: Room) {
     this.roomNumber = roomNumber;

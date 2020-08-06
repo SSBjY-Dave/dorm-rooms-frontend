@@ -7,7 +7,9 @@
             [style.top]="convertPxToRem(calculateRoomY(room.offset.y))"
             [style.left]="convertPxToRem(calculateRoomY(room.offset.x))"
             [style.width]="convertPxToRem(calculateRoomX(room.size.width))"
-            [style.height]="convertPxToRem(calculateRoomY(room.size.height))">
+            [style.height]="convertPxToRem(calculateRoomY(room.size.height))"
+            (click)="applyForRoom(room, false)">
+            <!--<div [hidden]="!room.operationPending" class="loading-ring"><div></div><div></div><div></div><div></div></div>-->
             <span>{{fullRoomNumber(floor.level, room.roomNumber)}}</span>
             <ul>
               <ng-template ngFor let-rc [ngForOf]="room.room.roomConnectors">
@@ -23,7 +25,7 @@
     <div class="selector_overlay"></div>
     <div class="selector_levels">
       <ng-template ngFor let-floor [ngForOf]="building" let-i="index">
-        <div [style.lineHeight]="calculateSelectorItemLineHeight()" (click)="showFloor(i)">{{floor.level}} .em</div>
+        <div [style.lineHeight]="calculateSelectorItemLineHeight()" (click)="showFloor(i)">{{floor.level}}. em</div>
       </ng-template>
     </div>
   </section>
@@ -50,7 +52,7 @@
               </ng-template>
             </td>
             <td>
-              <button>Jelentkezés</button>
+              <button *ngIf="!isPersonInRoom(room)" (click)="applyForRoom(room, false)">Jelentkezés</button>
             </td>
           </tr>
         </ng-template>
@@ -60,3 +62,12 @@
 </section>
 
 {{domRenderFinished()}}
+<ng-template [ngIf]="reservationOverlayRoom !== undefined && reservationOverlayRoom !== null">
+  <div class="page_overlay page_overlay_hidden">
+    <div>
+      <p>Szeretnél a {{reservationOverlayRoom.room.id}}-{{roomNumberToFuckingHungarianRagozottForma(reservationOverlayRoom.room.id.toString())}} szobába {{currentPerson.hasRoom ? 'átjelentkezni' : 'jelentkezni' }}?</p>
+      <button (click)="applyForRoom(reservationOverlayRoom, true)">Igen</button>
+      <button (click)="hidePageOverlay()">Nem</button>
+    </div>
+  </div>
+</ng-template>
