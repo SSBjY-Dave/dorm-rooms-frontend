@@ -15,7 +15,7 @@ export class InfoBoxComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dormService.getCurrentPerson().subscribe(p => this.person = p);
+    this.dormService.getCurrentPerson().subscribe(p => this.person = Object.assign(new People(), p));
   }
 
 }

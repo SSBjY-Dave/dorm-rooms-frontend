@@ -3,6 +3,6 @@
     <span>{{person.name}}</span>
     <span>{{person.neptunId}}</span>
     <span>{{(person.roomConnector !== null) ? person.roomConnector.room.id : '-'}}</span>
-    <span ng-if="person.isAdmin"><i class="fa fa-user-circle fa-lg"></i></span>
+    <span *ngIf="person.isAdmin"><i class="fa fa-user-circle fa-lg"></i></span>
   </ng-template>
 </section>

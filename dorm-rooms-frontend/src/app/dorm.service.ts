@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Observable, Observer} from 'rxjs';
 import { Urls } from './urls';
 
 @Injectable({
@@ -14,6 +14,7 @@ export class DormService {
 
   private readonly authorizationToken: string;
   private http: HttpClient;
+  private cachedDormData: CachedDormData = new CachedDormData();
 
 
   // Label association operations
@@ -36,8 +37,13 @@ export class DormService {
   public modifyLabel(label: Label): Observable<LabelRequestStatus[]> {
     return this.startPostRequest<LabelRequestStatus[]>(Urls.LABEL_MODIFY, label);
   }
-  public getAllLabel(): Observable<LabelRequestStatus[]> {
-    return this.startGetRequest<LabelRequestStatus[]>(Urls.LABEL_GET_ALL);
+  public getAllLabel(): Observable<Label[]> {
+    if (this.cachedDormData.labelsAll === undefined) {
+      const result = this.startGetRequest<Label[]>(Urls.LABEL_GET_ALL);
+      result.subscribe(labels => this.cachedDormData.labelsAll = labels, error => console.log(error));
+      return result;
+    }
+    return this.createObservableFromCachedData<Label[]>(this.cachedDormData.labelsAll);
   }
 
   // People operations
@@ -51,13 +57,28 @@ export class DormService {
     return this.startPostRequest<PeopleRequestStatus[]>(Urls.PERSON_MODIFY, person);
   }
   public getAllPeople(): Observable<People[]> {
-    return this.startGetRequest<People[]>(Urls.PERSON_GET_ALL);
+    if (this.cachedDormData.peopleAll === undefined) {
+      const result = this.startGetRequest<People[]>(Urls.PERSON_GET_ALL);
+      result.subscribe(ps => this.cachedDormData.peopleAll = ps, error => console.log(error));
+      return result;
+    }
+    return this.createObservableFromCachedData<People[]>(this.cachedDormData.peopleAll);
   }
   public getAllPeopleAdmin(): Observable<People[]> {
-    return this.startGetRequest<People[]>(Urls.PERSON_GET_ALL_ADMIN);
+    if (this.cachedDormData.peopleAll === undefined) {
+      const result = this.startGetRequest<People[]>(Urls.PERSON_GET_ALL_ADMIN);
+      result.subscribe(ps => this.cachedDormData.peopleAllAdmin = ps, error => console.log(error));
+      return result;
+    }
+    return this.createObservableFromCachedData<People[]>(this.cachedDormData.peopleAllAdmin);
   }
   public getCurrentPerson(): Observable<People> {
-    return this.startGetRequest<People>(Urls.PERSON_GET_CURRENT);
+    if (this.cachedDormData.peopleAll === undefined) {
+      const result = this.startGetRequest<People>(Urls.PERSON_GET_CURRENT);
+      result.subscribe(p => this.cachedDormData.currentPerson = p, error => console.log(error));
+      return result;
+    }
+    return this.createObservableFromCachedData<People>(this.cachedDormData.currentPerson);
   }
 
   // Role association operations
@@ -97,6 +118,23 @@ export class DormService {
     return this.startPostRequest<RoomRequestStatus>(
       Urls.ROOM_SET_LOCK_STATE, new RoomModificationData(room, sex, room.locked));
   }
+  public getAllRooms(): Observable<Room[]> {
+    if (this.cachedDormData.peopleAll === undefined) {
+      const result = this.startGetRequest<Room[]>(Urls.ROOM_GET_ALL);
+      result.subscribe(rs => this.cachedDormData.roomsAll = rs, error => console.log(error));
+      return result;
+    }
+    return this.createObservableFromCachedData<Room[]>(this.cachedDormData.roomsAll);
+  }
+  public canApplyForRoom(room: Room, currentPerson: People): boolean {
+    // ERROR: This condition will always return 'false' since the types 'string' and 'RoleType' have no overlap.
+    // This is not true so fuck you angular
+    // @ts-ignore
+    return  (room.sex === Sex[Sex.ANY] || room.sex === currentPerson.sex) &&
+            (room.id !== currentPerson.roomConnector.room.id) &&
+            (room.roomConnectors.length < room.capacity) &&
+            (!room.locked);
+  }
 
   private getRequestHeader(): any {
     return {Authorization: 'Basic ' + this.authorizationToken, 'Content-Type': 'application/json;charset=UTF-8'};
@@ -107,6 +145,22 @@ export class DormService {
   private startPostRequest<T>(url: string, body: any): Observable<T> {
     return this.http.post<T>(url, body, {headers: this.getRequestHeader()});
   }
+
+  private createObservableFromCachedData<T>(data: T): Observable<T> {
+    return new Observable<T>(observer => {
+      observer.next(data);
+      observer.complete();
+    });
+  }
+}
+class CachedDormData {
+  public labelsAll: Label[];
+
+  public currentPerson: People;
+  public peopleAll: People[];
+  public peopleAllAdmin: People[];
+
+  public roomsAll: Room[];
 }
 export enum DormEvents {
   NO_AUTH_INFO
@@ -130,6 +184,10 @@ export class People {
     // This is not true so fuck you angular
     // @ts-ignore
     return this.roleConnectors.find(rc => RoleType[rc.role.role] === RoleType.ADMIN) !== undefined;
+  }
+
+  get hasRoom(): boolean {
+    return this.roomConnector !== undefined && this.roomConnector !== null;
   }
 }
 export class LabelConnector {
