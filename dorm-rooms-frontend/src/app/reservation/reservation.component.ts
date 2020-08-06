@@ -121,7 +121,7 @@ export class ReservationComponent implements OnInit {
               layout[i].rooms[j].size.width,
               layout[i].rooms[j].size.height,
             ),
-            rooms[roomIndex]
+            Object.assign(new Room(), rooms[roomIndex])
           )
         );
       }
