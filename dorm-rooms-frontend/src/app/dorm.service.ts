@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable, Observer} from 'rxjs';
+import { Observable } from 'rxjs';
 import { Urls } from './urls';
 
 @Injectable({
@@ -10,11 +10,15 @@ export class DormService {
   constructor(http: HttpClient) {
     this.http = http;
     this.authorizationToken = (new URL(window.location.href)).searchParams.get('token'); // TODO: this is ugly as fuck
+    this.rescheduleReloadDaemon(this);
   }
 
   private readonly authorizationToken: string;
   private http: HttpClient;
   private cachedDormData: CachedDormData = new CachedDormData();
+  private reloadDaemonTimerID: number;
+
+  public readonly reloadDaemonEvent = new EventEmitter<boolean>();
 
 
   // Label association operations
@@ -37,11 +41,14 @@ export class DormService {
   public modifyLabel(label: Label): Observable<LabelRequestStatus[]> {
     return this.startPostRequest<LabelRequestStatus[]>(Urls.LABEL_MODIFY, label);
   }
+  private getAllLabelNow(): Observable<Label[]> {
+    const result = this.startGetRequest<Label[]>(Urls.LABEL_GET_ALL);
+    result.subscribe(labels => this.cachedDormData.labelsAll = labels, error => console.log(error));
+    return result;
+  }
   public getAllLabel(): Observable<Label[]> {
     if (this.cachedDormData.labelsAll === undefined) {
-      const result = this.startGetRequest<Label[]>(Urls.LABEL_GET_ALL);
-      result.subscribe(labels => this.cachedDormData.labelsAll = labels, error => console.log(error));
-      return result;
+      return this.getAllLabelNow();
     }
     return this.createObservableFromCachedData<Label[]>(this.cachedDormData.labelsAll);
   }
@@ -56,27 +63,36 @@ export class DormService {
   public modifyPerson(person: People): Observable<PeopleRequestStatus[]> {
     return this.startPostRequest<PeopleRequestStatus[]>(Urls.PERSON_MODIFY, person);
   }
+  private getAllPeopleNow(): Observable<People[]> {
+    const result = this.startGetRequest<People[]>(Urls.PERSON_GET_ALL);
+    result.subscribe(ps => this.cachedDormData.peopleAll = ps, error => console.log(error));
+    return result;
+  }
   public getAllPeople(): Observable<People[]> {
     if (this.cachedDormData.peopleAll === undefined) {
-      const result = this.startGetRequest<People[]>(Urls.PERSON_GET_ALL);
-      result.subscribe(ps => this.cachedDormData.peopleAll = ps, error => console.log(error));
-      return result;
+      return this.getAllPeopleNow();
     }
     return this.createObservableFromCachedData<People[]>(this.cachedDormData.peopleAll);
   }
+  private getAllPeopleAdminNow(): Observable<People[]> {
+    const result = this.startGetRequest<People[]>(Urls.PERSON_GET_ALL_ADMIN);
+    result.subscribe(ps => this.cachedDormData.peopleAllAdmin = ps, error => console.log(error));
+    return result;
+  }
   public getAllPeopleAdmin(): Observable<People[]> {
     if (this.cachedDormData.peopleAll === undefined) {
-      const result = this.startGetRequest<People[]>(Urls.PERSON_GET_ALL_ADMIN);
-      result.subscribe(ps => this.cachedDormData.peopleAllAdmin = ps, error => console.log(error));
-      return result;
+      return this.getAllPeopleAdminNow();
     }
     return this.createObservableFromCachedData<People[]>(this.cachedDormData.peopleAllAdmin);
   }
+  private getCurrentPersonNow(): Observable<People> {
+    const result = this.startGetRequest<People>(Urls.PERSON_GET_CURRENT);
+    result.subscribe(p => this.cachedDormData.currentPerson = p, error => console.log(error));
+    return result;
+  }
   public getCurrentPerson(): Observable<People> {
     if (this.cachedDormData.peopleAll === undefined) {
-      const result = this.startGetRequest<People>(Urls.PERSON_GET_CURRENT);
-      result.subscribe(p => this.cachedDormData.currentPerson = p, error => console.log(error));
-      return result;
+      return this.getCurrentPersonNow();
     }
     return this.createObservableFromCachedData<People>(this.cachedDormData.currentPerson);
   }
@@ -118,11 +134,14 @@ export class DormService {
     return this.startPostRequest<RoomRequestStatus>(
       Urls.ROOM_SET_LOCK_STATE, new RoomModificationData(room, sex, room.locked));
   }
+  private getAllRoomsNow(): Observable<Room[]> {
+    const result = this.startGetRequest<Room[]>(Urls.ROOM_GET_ALL);
+    result.subscribe(rs => this.cachedDormData.roomsAll = rs, error => console.log(error));
+    return result;
+  }
   public getAllRooms(): Observable<Room[]> {
     if (this.cachedDormData.peopleAll === undefined) {
-      const result = this.startGetRequest<Room[]>(Urls.ROOM_GET_ALL);
-      result.subscribe(rs => this.cachedDormData.roomsAll = rs, error => console.log(error));
-      return result;
+      return this.getAllRoomsNow();
     }
     return this.createObservableFromCachedData<Room[]>(this.cachedDormData.roomsAll);
   }
@@ -131,7 +150,7 @@ export class DormService {
     // This is not true so fuck you angular
     // @ts-ignore
     return  (room.sex === Sex[Sex.ANY] || room.sex === currentPerson.sex) &&
-            (room.id !== currentPerson.roomConnector.room.id) &&
+            (currentPerson.roomConnector === null) || (room.id !== currentPerson.roomConnector.room.id) &&
             (room.roomConnectors.length < room.capacity) &&
             (!room.locked);
   }
@@ -151,6 +170,33 @@ export class DormService {
       observer.next(data);
       observer.complete();
     });
+  }
+
+  private rescheduleReloadDaemon(self: DormService, timeoutType: number = 0): void {
+    clearTimeout(self.reloadDaemonTimerID);
+    const timeoutTime = timeoutType === 0 ? 5000 : 2000;
+    self.reloadDaemonTimerID = setTimeout(self.reloadDaemon, timeoutTime, self);
+  }
+
+  private async reloadDaemon(self: DormService = null): Promise<void> {
+    if (self.cachedDormData.labelsAll !== undefined) {
+      await self.getAllLabelNow().toPromise();
+    }
+    if (self.cachedDormData.currentPerson !== undefined) {
+      await self.getCurrentPersonNow().toPromise();
+    }
+    if (self.cachedDormData.peopleAll !== undefined) {
+      await self.getAllPeopleNow().toPromise();
+    }
+    if (self.cachedDormData.peopleAllAdmin !== undefined) {
+      await self.getAllPeopleAdminNow().toPromise();
+    }
+    if (self.cachedDormData.roomsAll !== undefined) {
+      await self.getAllRoomsNow();
+    }
+
+    self.rescheduleReloadDaemon(self);
+    self.reloadDaemonEvent.emit(true); // TODO: emit false if error
   }
 }
 class CachedDormData {
