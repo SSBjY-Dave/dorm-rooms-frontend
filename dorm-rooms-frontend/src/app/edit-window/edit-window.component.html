@@ -1,17 +1,24 @@
-<div id = "panel">
-    <div class = "edit_form">
+<div class="page_overlay">
+    <div style="width: 150rem; height: 40rem">
         Név: <input id = "name_editor" type="text" [(ngModel)]="temp.name">
         Neptun: <input id = "neptun_editor" type="text" [(ngModel)]="temp.neptunId">
         E-mail: <input id = "email_editor" type="email" [(ngModel)]="temp.email">
         <br><br>
-        <ng-template ngFor let-label [ngForOf]="labels" class = "label_container">
-            <div class = "label_button" [class.bg-highlight] = "hasLabel(label)" (click)="toggleLabel(label)" >{{label.name}}</div>
+      <div class="label-container">
+        <ng-template ngFor let-label [ngForOf]="labels" let-last="last">
+            <div
+              [class.bg-highlight]="hasLabel(label)"
+              [class.bg-text-highlight]="hasLabel(label)"
+              [class.bg-normal]="!hasLabel(label)"
+              class="label_button" (click)="toggleLabel(label)" >{{label.name}}</div>
+          <div *ngIf="last" class="clear-fix"></div>
         </ng-template>
+      </div>
         <div class = "button_container">
             <div class = "button" (click)="save()">Mentés</div>
             <div class = "button" (click)="cancel()">Mégse</div>
             <div class = "button" (click)="reset()">Visszaállítás</div>
+          <div class="clear-fix"></div>
         </div>
     </div>
-<div class = "overlay" (click)="cancel()"></div>
 </div>

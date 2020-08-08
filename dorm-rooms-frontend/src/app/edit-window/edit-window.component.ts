@@ -20,14 +20,14 @@ export class EditWindowComponent implements OnInit {
   public regExpNeptun = /^[A-Z0-9]{6}$/;
   public regExpEmail = /^([A-z0-9\.\-\_]+)@([a-z0-9\.\-\_]+)\.([a-z]{2,})$/;
 
-  constructor(dormService: DormService) { 
+  constructor(dormService: DormService) {
     this.dormService = dormService;
   }
-  
+
   ngOnInit(): void {
     this.temp = JSON.parse(JSON.stringify(this.person));
     this.dormService.getAllLabel().subscribe(l => {
-      this.labels = []; 
+      this.labels = [];
       for (const label of l) {
         this.labels.push(Object.assign(new Label(), label));
       }
@@ -35,27 +35,27 @@ export class EditWindowComponent implements OnInit {
   }
 
   hasLabel(label: Label): boolean {
-    return (this.temp.labelConnectors.findIndex(lc => lc.label === label)!==-1);
+    return (this.temp.labelConnectors.findIndex(lc => lc.label.id === label.id) !== -1);
   }
 
   toggleLabel(label: Label): void {
-    //if (this.hasLabel(label)) {
-    //  this.dormService.disassociateLabel(this.temp, label);
-    //}
-    //else {
-    //  this.dormService.associateLabel(this.temp, label);
-    //}
+    if (this.hasLabel(label)) {
+      this.dormService.disassociateLabel(this.temp, label).subscribe(res => console.log(res));
+    }
+    else {
+      this.dormService.associateLabel(this.temp, label).subscribe(res => console.log(res));
+    }
   }
 
   regexValid(): boolean {
     let nameValid = this.regExpName.test(this.temp.name);
     let neptunValid = this.regExpNeptun.test(this.temp.neptunId);
     let emailValid = this.regExpEmail.test(this.temp.email);
-    
+
     if (!nameValid) {
       AppComponent.messageEvent.emit("Érvénytelen név!");
     }
-    
+
     if (!neptunValid) {
       AppComponent.messageEvent.emit("Érvénytelen Neptun kód!");
     }

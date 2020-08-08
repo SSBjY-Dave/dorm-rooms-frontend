@@ -28,28 +28,35 @@
 }
 
 .button {
-    color: white;
-    background-color: darkblue;
-    border-radius: 1rem;
-    padding: 0.5rem;
-    text-align: center;
-    display: table-cell;
-    cursor: pointer;
+  color: white;
+  background-color: darkblue;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  min-width: 5rem;
+  float: left;
 }
 
 .button_container {
-    display: inline;
+  width: max-content;
+  margin: 0 auto;
 }
 
-.label_container {
-    display: inline;
+.label-container {
+  width: max-content;
+  margin: 0 auto;
 }
 
 .label_button {
-    color: black;
-    background-color: lightgray;
-    text-align: center;
-    border-radius: 1.5rem;
-    padding: 0.5rem;
-    display: table-cell;
+  margin-left: 1em;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 1.5rem;
+  padding: 0.5rem;
+  min-width: 5rem;
+  float: left;
+}
+.label_button:first-of-type {
+  margin-left: 0;
 }
