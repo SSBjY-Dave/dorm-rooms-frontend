@@ -34,10 +34,15 @@ export class ListPeopleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dormService.getAllPeopleAdmin().subscribe(p => {
-      this.people = []; 
+    this.loadData(this);
+    this.dormService.reloadDaemonEvent.subscribe(_ => this.loadData(this));
+  }
+
+  loadData(self: ListPeopleComponent): void {
+    self.dormService.getAllPeopleAdmin().subscribe(p => {
+      self.people = []; 
       for (const person of p) {
-        this.people.push(Object.assign(new People(), person));
+        self.people.push(Object.assign(new People(), person));
       } 
       console.log("data arrived")
     });
