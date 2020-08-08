@@ -39,7 +39,12 @@ export class EditWindowComponent implements OnInit {
   }
 
   toggleLabel(label: Label): void {
-    
+    //if (this.hasLabel(label)) {
+    //  this.dormService.disassociateLabel(this.temp, label);
+    //}
+    //else {
+    //  this.dormService.associateLabel(this.temp, label);
+    //}
   }
 
   regexValid(): boolean {
