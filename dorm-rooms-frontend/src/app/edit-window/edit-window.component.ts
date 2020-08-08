@@ -31,12 +31,20 @@ export class EditWindowComponent implements OnInit {
       for (const label of l) {
         this.labels.push(Object.assign(new Label(), label));
       }
-      console.log("data arrived")
     });
   }
 
-  toggleLabel(label: Label){
-    
+  hasLabel(label: Label): boolean {
+    return (this.temp.labelConnectors.findIndex(lc => lc.label === label)!==-1);
+  }
+
+  toggleLabel(label: Label): void {
+    //if (this.hasLabel(label)) {
+    //  this.dormService.disassociateLabel(this.temp, label);
+    //}
+    //else {
+    //  this.dormService.associateLabel(this.temp, label);
+    //}
   }
 
   regexValid(): boolean {

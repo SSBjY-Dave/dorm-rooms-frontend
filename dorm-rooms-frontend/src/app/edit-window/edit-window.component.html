@@ -5,7 +5,7 @@
         E-mail: <input id = "email_editor" type="email" [(ngModel)]="temp.email">
         <br><br>
         <ng-template ngFor let-label [ngForOf]="labels" class = "label_container">
-            <div class = "label_button" (click)="toggleLabel(label)" >{{label.name}}</div>
+            <div class = "label_button" [class.bg-highlight] = "hasLabel(label)" (click)="toggleLabel(label)" >{{label.name}}</div>
         </ng-template>
         <div class = "button_container">
             <div class = "button" (click)="save()">Mentés</div>
