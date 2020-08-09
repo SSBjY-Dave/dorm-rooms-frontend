@@ -1,22 +1,49 @@
-<section id="view_normal">
+<section *ngIf="!isHandheldDevice()" id="view_normal">
   <section class="building" id="building">
-    <ng-template ngFor let-floor [ngForOf]="building" let-i="index">
-      <article class="floor" style="background-image: url('assets/building/adk/floor_{{floor.level}}.svg'); z-index: {{ 99 - i}}">
+    <ng-template #buildingTemplate ngFor let-floor [ngForOf]="building" let-i="index" let-last="last">
+      <article
+        [class.offset-top]="i === currentFloor + 1"
+        [class.offset-bottom]="i === currentFloor - 1"
+        [class.active]="i === currentFloor"
+        class="floor"
+        style="background-image: url('assets/building/adk/floor_{{floor.level}}.svg'); z-index: {{ 99 - i}}">
         <ng-template ngFor let-room [ngForOf]="floor.roomWrappers">
           <div
             [style.top]="convertPxToRem(calculateRoomY(room.offset.y))"
-            [style.left]="convertPxToRem(calculateRoomY(room.offset.x))"
+            [style.left]="convertPxToRem(calculateRoomX(room.offset.x))"
             [style.width]="convertPxToRem(calculateRoomX(room.size.width))"
             [style.height]="convertPxToRem(calculateRoomY(room.size.height))"
-            (click)="applyForRoom(room, false)">
-            <!--<div [hidden]="!room.operationPending" class="loading-ring"><div></div><div></div><div></div><div></div></div>-->
-            <span>{{fullRoomNumber(floor.level, room.roomNumber)}}</span>
+            (click)="tryApplyForRoom(room)">
+            <div *ngIf="room.operationPending" class="loading-ring"><div></div><div></div><div></div><div></div></div>
+            <span>
+              {{fullRoomNumber(floor.level, room.roomNumber)}}
+              <i class="fa"
+                 [class.fa-mars]="room.room.sex === 'MALE'"
+                 [class.fa-venus]="room.room.sex === 'FEMALE'"
+                 [class.fa-transgender]="room.room.sex === 'ANY'"></i>
+              <i class="fa"
+                 [class.fa-unlock]="!room.room.locked"
+                 [class.fa-lock]="room.room.locked"></i>
+            </span>
             <ul>
               <ng-template ngFor let-rc [ngForOf]="room.room.roomConnectors">
                 <li>{{rc.people.name}}</li>
               </ng-template>
             </ul>
           </div>
+          <section
+            [style.top]="convertPxToRem(calculateRoomY(room.offset.y) + calculateRoomX(room.size.height) / 2)"
+            [style.left]="convertPxToRem(calculateRoomX(room.offset.x) + calculateRoomX(room.size.width))"
+            *ngIf="currentPerson.isAdmin || isPersonInRoom(room)">
+            <i *ngIf="currentPerson.isAdmin || (room.room.sex !== 'FEMALE' && currentPerson.sex === 'FEMALE')" class="fa fa-venus" (click)="setRoomSex(room, 'FEMALE')"></i>
+            <i *ngIf="currentPerson.isAdmin || (room.room.sex !== 'MALE' && currentPerson.sex === 'MALE')" class="fa fa-mars" (click)="setRoomSex(room, 'MALE')"></i>
+            <i *ngIf="currentPerson.isAdmin || room.room.sex !== 'ANY'" class="fa fa-transgender" (click)="setRoomSex(room, 'ANY')"></i>
+            <i *ngIf="currentPerson.isAdmin" class="fa"
+               [class.fa-unlock]="room.room.locked"
+               [class.fa-lock]="!room.room.locked"
+               (click)="setRoomLockedState(room, !room.room.locked)"></i>
+            <i *ngIf="currentPerson.isAdmin" class="fa fa-user-times" (click)="clearRoom(room)"></i>
+          </section>
         </ng-template>
       </article>
     </ng-template>
@@ -31,7 +58,8 @@
   </section>
 </section>
 
-<section id="view_simple">
+<section id="view_simple"
+  [class.handheld-view]="isHandheldDevice()">
   <ng-template ngFor let-floor [ngForOf]="building">
     <table>
       <caption>{{floor.level}}. emelet</caption>
@@ -40,19 +68,44 @@
           <th>Szoba</th>
           <th>Lakók</th>
           <th>&nbsp;</th>
+          <th *ngIf="currentPerson.isAdmin"> </th>
         </tr>
       </thead>
       <tbody>
         <ng-template ngFor let-room [ngForOf]="floor.roomWrappers">
           <tr>
-            <td>{{room.paddedRoomNumber}}</td>
+            <td>
+              {{room.paddedRoomNumber}}
+              <i class="fa"
+                 [class.fa-mars]="room.room.sex === 'MALE'"
+                 [class.fa-venus]="room.room.sex === 'FEMALE'"
+                 [class.fa-transgender]="room.room.sex === 'ANY'"></i>
+              <i class="fa"
+                 [class.fa-unlock]="!room.room.locked"
+                 [class.fa-lock]="room.room.locked"></i>
+            </td>
             <td>
               <ng-template ngFor let-person [ngForOf]="room.residents">
                 <div>{{person.name}}</div>
               </ng-template>
             </td>
             <td>
-              <button *ngIf="!isPersonInRoom(room)" (click)="applyForRoom(room, false)">Jelentkezés</button>
+              <button *ngIf="!isPersonInRoom(room)" (click)="tryApplyForRoom(room)">Jelentkezés</button>
+              <ng-container *ngIf="isPersonInRoom(room)">
+                <i *ngIf="(room.room.sex !== 'FEMALE' && currentPerson.sex === 'FEMALE')" class="fa fa-venus" (click)="setRoomSex(room, 'FEMALE')"></i>
+                <i *ngIf="(room.room.sex !== 'MALE' && currentPerson.sex === 'MALE')" class="fa fa-mars" (click)="setRoomSex(room, 'MALE')"></i>
+                <i *ngIf="room.room.sex !== 'ANY'" class="fa fa-transgender" (click)="setRoomSex(room, 'ANY')"></i>
+              </ng-container>
+            </td>
+            <td *ngIf="currentPerson.isAdmin">
+              <i *ngIf="currentPerson.isAdmin || (room.room.sex !== 'FEMALE' && currentPerson.sex === 'FEMALE')" class="fa fa-venus" (click)="setRoomSex(room, 'FEMALE')"></i>
+              <i *ngIf="currentPerson.isAdmin || (room.room.sex !== 'MALE' && currentPerson.sex === 'MALE')" class="fa fa-mars" (click)="setRoomSex(room, 'MALE')"></i>
+              <i *ngIf="currentPerson.isAdmin || room.room.sex !== 'ANY'" class="fa fa-transgender" (click)="setRoomSex(room, 'ANY')"></i>
+              <i *ngIf="currentPerson.isAdmin" class="fa"
+                 [class.fa-unlock]="room.room.locked"
+                 [class.fa-lock]="!room.room.locked"
+                 (click)="setRoomLockedState(room, !room.room.locked)"></i>
+              <i *ngIf="currentPerson.isAdmin" class="fa fa-user-times" (click)="clearRoom(room)"></i>
             </td>
           </tr>
         </ng-template>
@@ -61,12 +114,11 @@
   </ng-template>
 </section>
 
-{{domRenderFinished()}}
 <ng-template [ngIf]="reservationOverlayRoom !== undefined && reservationOverlayRoom !== null">
   <div class="page_overlay page_overlay_hidden">
     <div>
-      <p>Szeretnél a {{reservationOverlayRoom.room.id}}-{{roomNumberToFuckingHungarianRagozottForma(reservationOverlayRoom.room.id.toString())}} szobába {{currentPerson.hasRoom ? 'átjelentkezni' : 'jelentkezni' }}?</p>
-      <button (click)="applyForRoom(reservationOverlayRoom, true)">Igen</button>
+      <p>Szeretnél {{roomNumberToFuckingHungarianRagozottForma(reservationOverlayRoom.room.id.toString())}} szobába {{currentPerson.hasRoom ? 'átjelentkezni' : 'jelentkezni' }}?</p>
+      <button (click)="applyForRoom(reservationOverlayRoom)">Igen</button>
       <button (click)="hidePageOverlay()">Nem</button>
     </div>
   </div>
