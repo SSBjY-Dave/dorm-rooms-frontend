@@ -2,6 +2,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Urls } from './urls';
+import { share } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,7 @@ export class DormService {
   }
   private getAllLabelNow(): Observable<Label[]> {
     const result = this.startGetRequest<Label[]>(Urls.LABEL_GET_ALL);
-    result.subscribe(labels => this.cachedDormData.labelsAll = labels, error => console.log(error));
+    result.subscribe(labels => this.cachedDormData.labelsAll = labels);
     return result;
   }
   public getAllLabel(): Observable<Label[]> {
@@ -65,7 +66,7 @@ export class DormService {
   }
   private getAllPeopleNow(): Observable<People[]> {
     const result = this.startGetRequest<People[]>(Urls.PERSON_GET_ALL);
-    result.subscribe(ps => this.cachedDormData.peopleAll = ps, error => console.log(error));
+    result.subscribe(ps => this.cachedDormData.peopleAll = ps);
     return result;
   }
   public getAllPeople(): Observable<People[]> {
@@ -76,7 +77,7 @@ export class DormService {
   }
   private getAllPeopleAdminNow(): Observable<People[]> {
     const result = this.startGetRequest<People[]>(Urls.PERSON_GET_ALL_ADMIN);
-    result.subscribe(ps => this.cachedDormData.peopleAllAdmin = ps, error => console.log(error));
+    result.subscribe(ps => this.cachedDormData.peopleAllAdmin = ps);
     return result;
   }
   public getAllPeopleAdmin(): Observable<People[]> {
@@ -87,7 +88,7 @@ export class DormService {
   }
   private getCurrentPersonNow(): Observable<People> {
     const result = this.startGetRequest<People>(Urls.PERSON_GET_CURRENT);
-    result.subscribe(p => this.cachedDormData.currentPerson = p, error => console.log(error));
+    result.subscribe(p => this.cachedDormData.currentPerson = p);
     return result;
   }
   public getCurrentPerson(): Observable<People> {
@@ -122,7 +123,7 @@ export class DormService {
       Urls.RESERVATION_ASSIGN_TO_ROOM, new ReservationData(person, room));
   }
   public clearRoom(room: Room): Observable<ReservationRequestStatus> {
-    return this.startPostRequest<ReservationRequestStatus>(Urls.RESERVATION_CHANGE_ROOM, room);
+    return this.startPostRequest<ReservationRequestStatus>(Urls.RESERVATION_CLEAR_ROOM, room);
   }
 
   // Room operations
@@ -130,13 +131,13 @@ export class DormService {
     return this.startPostRequest<RoomRequestStatus>(
       Urls.ROOM_SET_LOCK_STATE, new RoomModificationData(room, room.sex, locked));
   }
-  public setRoomAllowed(room: Room, sex: Sex): Observable<RoomRequestStatus> {
+  public setRoomAllowedSex(room: Room, sex: Sex): Observable<RoomRequestStatus> {
     return this.startPostRequest<RoomRequestStatus>(
-      Urls.ROOM_SET_LOCK_STATE, new RoomModificationData(room, sex, room.locked));
+      Urls.ROOM_SET_ALLOWED_SEX, new RoomModificationData(room, sex, room.locked));
   }
   private getAllRoomsNow(): Observable<Room[]> {
     const result = this.startGetRequest<Room[]>(Urls.ROOM_GET_ALL);
-    result.subscribe(rs => this.cachedDormData.roomsAll = rs, error => console.log(error));
+    result.subscribe(rs => this.cachedDormData.roomsAll = rs);
     return result;
   }
   public getAllRooms(): Observable<Room[]> {
@@ -159,10 +160,14 @@ export class DormService {
     return {Authorization: 'Basic ' + this.authorizationToken, 'Content-Type': 'application/json;charset=UTF-8'};
   }
   private startGetRequest<T>(url: string): Observable<T> {
-    return this.http.get<T>(url, {headers: this.getRequestHeader()});
+    const result = this.http.get<T>(url, {headers: this.getRequestHeader()}).pipe(share());
+    result.subscribe(_ => {}, error => console.error(error));
+    return result;
   }
   private startPostRequest<T>(url: string, body: any): Observable<T> {
-    return this.http.post<T>(url, body, {headers: this.getRequestHeader()});
+    const result = this.http.post<T>(url, body, {headers: this.getRequestHeader()}).pipe(share());
+    result.subscribe(_ => {}, error => console.error(error), () => this.rescheduleReloadDaemon(this, 1));
+    return result;
   }
 
   private createObservableFromCachedData<T>(data: T): Observable<T> {
