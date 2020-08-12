@@ -30,10 +30,11 @@ export class NotificationBoxComponent implements OnInit {
   }
 
   doNotificationAnimation(self: NotificationBoxComponent): void {
-    const notificationElement = document.getElementsByClassName("notification-box")[0];
+    const notificationBox = document.getElementsByClassName('notification-box')[0];
     if (self.notificationList.length === 0 && !self.showNotification) {
       self.notificationAnimationActive = false;
-      setTimeout((notificationElement) => notificationElement.classList.add("invisible"), NotificationBoxComponent.NOTIFICATION_ANIMATION_TIME, notificationElement);
+      setTimeout((notificationElement) =>
+        notificationElement.classList.add('invisible'), NotificationBoxComponent.NOTIFICATION_ANIMATION_TIME, notificationBox);
       return;
     }
     self.notificationAnimationActive = true;
@@ -44,7 +45,7 @@ export class NotificationBoxComponent implements OnInit {
       if (!self.animationPaused) {
         self.notificationMessage = self.notificationList[0];
         self.notificationList = self.notificationList.slice(1);
-        notificationElement.classList.remove("invisible");
+        notificationBox.classList.remove('invisible');
         self.showNotification = true;
         setTimeout(self.doNotificationAnimation, NotificationBoxComponent.NOTIFICATION_VISIBLE_TIME, self);
       } else {
@@ -54,7 +55,6 @@ export class NotificationBoxComponent implements OnInit {
   }
 
   pauseAnimation(): void {
-    console.log("animation paused");
     this.animationPaused = true;
   }
 

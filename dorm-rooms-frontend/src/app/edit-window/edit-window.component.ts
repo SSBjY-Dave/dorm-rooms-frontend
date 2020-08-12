@@ -48,20 +48,20 @@ export class EditWindowComponent implements OnInit {
   }
 
   regexValid(): boolean {
-    let nameValid = this.regExpName.test(this.temp.name);
-    let neptunValid = this.regExpNeptun.test(this.temp.neptunId);
-    let emailValid = this.regExpEmail.test(this.temp.email);
+    const nameValid = this.regExpName.test(this.temp.name);
+    const neptunValid = this.regExpNeptun.test(this.temp.neptunId);
+    const emailValid = this.regExpEmail.test(this.temp.email);
 
     if (!nameValid) {
-      AppComponent.messageEvent.emit("Érvénytelen név!");
+      AppComponent.messageEvent.emit('Érvénytelen név!');
     }
 
     if (!neptunValid) {
-      AppComponent.messageEvent.emit("Érvénytelen Neptun kód!");
+      AppComponent.messageEvent.emit('Érvénytelen Neptun kód!');
     }
 
     if (!emailValid) {
-      AppComponent.messageEvent.emit("Érvénytelen e-mail cím!");
+      AppComponent.messageEvent.emit('Érvénytelen e-mail cím!');
     }
 
     return (nameValid && neptunValid && emailValid);
@@ -70,24 +70,23 @@ export class EditWindowComponent implements OnInit {
   save(): void {
     if (this.regexValid()){
       this.dormService.modifyPerson(this.temp).subscribe(status => {
-        //TODO: handle status messages
-         //console.log(status);
+        // TODO: handle status messages
+         // console.log(status);
       });
-      AppComponent.messageEvent.emit("Mentés sikeres!");
+      AppComponent.messageEvent.emit('Mentés sikeres!');
       this.closeWindow.emit();
     }
   }
 
   cancel(): void {
-    //AppComponent.messageEvent.emit("Változtatások elvetve!");
-    //console.log("Változtatások elvetve!");
+    // AppComponent.messageEvent.emit("Változtatások elvetve!");
+    // console.log("Változtatások elvetve!");
     this.closeWindow.emit();
   }
 
   reset(): void {
-    console.log(this.temp);
     this.temp = JSON.parse(JSON.stringify(this.person));
-    AppComponent.messageEvent.emit("Adatok alaphelyzetbe állítva!");
+    AppComponent.messageEvent.emit('Adatok alaphelyzetbe állítva!');
   }
 
 }

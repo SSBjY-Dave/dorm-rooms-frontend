@@ -1,6 +1,7 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import { DormService, People } from '../dorm.service';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
+import {DormService, People} from '../dorm.service';
 import {Subscription} from 'rxjs';
+import {MainComponents} from '../app.component';
 
 @Component({
   selector: 'app-info-box',
@@ -8,6 +9,9 @@ import {Subscription} from 'rxjs';
   styleUrls: ['./info-box.component.css']
 })
 export class InfoBoxComponent implements OnInit, OnDestroy {
+  @Input('uiSwitchEmitter') uiSwitchEmitter: EventEmitter<MainComponents>;
+  @Input('currentMainComponent') currentMainComponent: MainComponents;
+
   private dormService: DormService;
   private reloadDaemonSubscription: Subscription;
   private changeDetectorReference: ChangeDetectorRef;
@@ -31,6 +35,14 @@ export class InfoBoxComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.reloadDaemonSubscription.unsubscribe();
+  }
+
+  switchUI(): void {
+    if (this.currentMainComponent === MainComponents.RESERVATION) {
+      this.uiSwitchEmitter.emit(MainComponents.LIST_PEOPLE);
+    } else {
+      this.uiSwitchEmitter.emit(MainComponents.RESERVATION);
+    }
   }
 
 }
