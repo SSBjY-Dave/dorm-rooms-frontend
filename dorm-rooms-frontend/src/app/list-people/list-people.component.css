@@ -3,18 +3,51 @@
     transition: opacity 500ms;
 }
 
+.searchField {
+    position: absolute;
+    right: 0em;
+    top: 0em;
+}
+
+.admin_menu button {
+    width: 2em;
+    position: relative;
+}
+
+.admin_menu button i,
+.admin_menu button span {
+    font-size: 1.15em;
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    line-height: 100%;
+}
+
+.admin_menu button span {
+    font-weight: bolder;
+    color: darkred;
+    text-shadow: 1px 1px 2px black;
+}
+
 tr:hover .admin_menu {
     opacity: 1;
 }
 
 table {
+    min-width: 80em;
     border-collapse: collapse;
 }
 
 table, th, td {
     padding-top: 1em 1.5em 1em 1.5em;
     text-align: center;
-    transition: background 500ms; 
+    transition: background-color 500ms; 
 }
 
 tr:hover td {

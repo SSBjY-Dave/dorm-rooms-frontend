@@ -6,4 +6,5 @@ div {
   padding: 5rem;
   max-width: 100rem;
   border-radius: 2rem;
+  z-index: 2;
 }

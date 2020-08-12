@@ -320,11 +320,11 @@ export enum RoomRequestStatus {
 }
 class RoleAssociationData {
   constructor(person: People, roleType: RoleType) {
-    this.person = person;
+    this.people = person;
     this.roleType = roleType;
   }
 
-  public readonly person: People;
+  public readonly people: People;
   public readonly roleType: RoleType;
 }
 class LabelAssociationData {
