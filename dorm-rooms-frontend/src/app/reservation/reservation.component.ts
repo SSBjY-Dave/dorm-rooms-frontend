@@ -1,16 +1,18 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {DormService, People, Room, Sex} from '../dorm.service';
 import {HttpClient} from '@angular/common/http';
+import {AppComponent} from '../app.component';
 
 @Component({
   selector: 'app-reservation',
   templateUrl: './reservation.component.html',
   styleUrls: ['./reservation.component.css']
 })
-export class ReservationComponent implements OnInit {
+export class ReservationComponent implements OnInit, AfterViewInit {
   private changeDetectorReference: ChangeDetectorRef;
   private dormService: DormService;
   private domStuffInitialized: boolean;
+  @ViewChildren('buildingTemplate') buildingTemplate: QueryList<any>;
 
   private http: HttpClient;
   public currentPerson: People;
@@ -26,28 +28,37 @@ export class ReservationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dormService.getCurrentPerson().subscribe(p => this.currentPerson = Object.assign(new People(), p));
-    this.loadRooms();
+    this.loadData(this);
+    this.dormService.reloadDaemonEvent.subscribe(_ => this.loadData(this));
   }
 
-  public applyForRoom(roomWrapper: RoomWrapper, fromOverlay: boolean): void {
-    if (!this.dormService.canApplyForRoom(roomWrapper.room, this.currentPerson)) {
-      if (fromOverlay) {
-        this.hidePageOverlay();
-      }
-      return;
-    }
-    if (!fromOverlay) {
-      this.showPageOverlay(roomWrapper);
-      return;
-    }
-    this.hidePageOverlay();
+  ngAfterViewInit(): void {
+    this.buildingTemplate.changes.subscribe(_ => this.domRenderFinished(this));
+  }
 
+  public isHandheldDevice(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(navigator.userAgent);
+  }
+
+  public tryApplyForRoom(roomWrapper: RoomWrapper): void {
+    if (this.dormService.canApplyForRoom(roomWrapper.room, this.currentPerson)) {
+      this.showPageOverlay(roomWrapper);
+    }
+  }
+
+  public applyForRoom(roomWrapper: RoomWrapper): void {
+    this.hidePageOverlay();
+    roomWrapper.operationPending = true;
     if (!this.currentPerson.hasRoom) {
-      roomWrapper.operationPending = true;
-      this.dormService.applyForRoom(roomWrapper.room).subscribe(res => console.log(res));
+      this.dormService.applyForRoom(roomWrapper.room).subscribe(res => {
+        console.log(res);
+        roomWrapper.operationPending = true;
+      });
     } else if (!this.isPersonInRoom(roomWrapper)) {
-      this.dormService.changeRoom(roomWrapper.room).subscribe(res => console.log(res));
+      this.dormService.changeRoom(roomWrapper.room).subscribe(res => {
+        console.log(res);
+        roomWrapper.operationPending = true;
+      });
     }
   }
 
@@ -60,9 +71,15 @@ export class ReservationComponent implements OnInit {
     return level + ((roomNumber < 10) ? '0' : '') + roomNumber;
   }
 
-  public domRenderFinished(): void {
-    this.setDefaults();
-    this.attachEventListeners();
+  public domRenderFinished(self: ReservationComponent): void {
+    if (!self.domStuffInitialized) {
+      self.setDefaults();
+      self.attachEventListeners();
+      self.attachAnimationClass();
+    } else {
+      self.attachAnimationClass();
+    }
+    self.domStuffInitialized = true;
   }
 
   public showPageOverlay(roomWrapper: RoomWrapper): void {
@@ -81,6 +98,22 @@ export class ReservationComponent implements OnInit {
     }, 250, this);
   }
 
+  public setRoomSex(room: RoomWrapper, sexStr: string): void {
+    const sex = Sex[sexStr];
+    room.operationPending = true;
+    this.dormService.setRoomAllowedSex(room.room, sex).subscribe(() => room.operationPending = true);
+  }
+
+  public clearRoom(room: RoomWrapper): void {
+    room.operationPending = true;
+    this.dormService.clearRoom(room.room).subscribe(() => room.operationPending = true);
+  }
+
+  public setRoomLockedState(room: RoomWrapper, lockState: boolean): void {
+    room.operationPending = true;
+    this.dormService.setRoomLockState(room.room, lockState);
+  }
+
   private setDefaults(): void {
     const floors = document.getElementsByClassName('floor');
     if (floors.length === 0 || this.domStuffInitialized) { return; }
@@ -97,12 +130,25 @@ export class ReservationComponent implements OnInit {
     });
   }
 
-  private loadRooms(): void {
-    this.http.get<any[]>('assets/building/adk/layout.json').subscribe(layout => {
-      this.dormService.getAllRooms().subscribe(rooms => this.createBuilding(layout, rooms));
+  private attachAnimationClass(): void {
+    const floors = document.getElementsByClassName('floor');
+    // tslint:disable-next-line:prefer-for-of // because there is no iterator for HTMLElementCollection :( (fuck you javascript)
+    for (let i = 0; i < floors.length; ++i) {
+      floors[i].classList.add('reservation-transition');
+    }
+  }
+
+  private loadData(self: ReservationComponent): void {
+    self.dormService.getCurrentPerson().subscribe(p => this.currentPerson = Object.assign(new People(), p))
+    self.loadRooms(self);
+  }
+
+  private loadRooms(self: ReservationComponent): void {
+    self.http.get<any[]>('assets/building/adk/layout.json').subscribe(layout => {
+      self.dormService.getAllRooms().subscribe(rooms => self.createBuilding(self, layout, rooms));
     });
   }
-  private createBuilding(layout: any[], rooms: Room[]): void {
+  private createBuilding(self: ReservationComponent, layout: any[], rooms: Room[]): void {
     const sortedRooms = rooms.sort((a, b) => (a.level === b.level) ? a.roomNumber - b.roomNumber : b.level - a.level);
     const levels = [];
     let roomIndex = 0;
@@ -121,12 +167,12 @@ export class ReservationComponent implements OnInit {
               layout[i].rooms[j].size.width,
               layout[i].rooms[j].size.height,
             ),
-            rooms[roomIndex]
+            Object.assign(new Room(), rooms[roomIndex])
           )
         );
       }
     }
-    this.building = levels;
+    self.building = levels;
   }
 
   public calculateSelectorItemLineHeight(): string {
