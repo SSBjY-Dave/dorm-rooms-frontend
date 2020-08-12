@@ -1,4 +1,7 @@
-<app-info-box></app-info-box>
-<app-reservation></app-reservation>
-<app-list-people></app-list-people>
+<app-info-box [uiSwitchEmitter]="uiSwitchEvent" [currentMainComponent]="mainComponent"></app-info-box>
+<ng-container [ngSwitch]="mainComponent">
+  <app-list-people *ngSwitchCase="0"></app-list-people>
+  <app-reservation *ngSwitchCase="1"></app-reservation>
+  <div *ngSwitchDefault>ERROR HAPPENED WITH COMPONENT SWITCH</div>
+</ng-container>
 <app-notification-box></app-notification-box>
