@@ -1,0 +1,15 @@
+<div class="page_overlay">
+    <div style="width: 150rem; height: 40rem">
+        <div class="label-container">
+            <ng-template ngFor let-label [ngForOf]="labels" let-last="last">
+                <div class="label_button">{{label.name}}
+                    <div class="buttons">
+                        <button class="edit_button" (click)='editLabel(label)'>&nbsp;<i class="fa fa-pencil fa-lg"></i></button>
+                        <button class="remove_button" (click)='deleteLabel(label)'>&nbsp;<i class="fa fa-trash fa-lg"></i></button>
+                    </div>
+                </div>                
+              <div *ngIf="last" class="clear-fix"></div>
+            </ng-template>
+          </div>
+    </div>
+</div>

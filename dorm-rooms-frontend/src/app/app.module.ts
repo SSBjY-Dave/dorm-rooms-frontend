@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { EditWindowComponent } from './edit-window/edit-window.component';
 import { NotificationBoxComponent } from './notification-box/notification-box.component';
+import { LabelWindowComponent } from './label-window/label-window.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { NotificationBoxComponent } from './notification-box/notification-box.co
     InfoBoxComponent,
     ListPeopleComponent,
     NotificationBoxComponent,
-    EditWindowComponent
+    EditWindowComponent,
+    LabelWindowComponent
   ],
   imports: [
     BrowserModule,
