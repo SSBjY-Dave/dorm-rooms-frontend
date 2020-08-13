@@ -12,17 +12,17 @@ export class ListPeopleComponent implements OnInit {
   private dormService: DormService;
   public people: People[];
   public person: People;
-  public peopleFilterText: string = "";
-  public peopleFilterType: string = "name";
-  public editActive: boolean = false;
-  
-  constructor(dormService: DormService) { 
+  public peopleFilterText = '';
+  public peopleFilterType = 'name';
+  public editActive = false;
+
+  constructor(dormService: DormService) {
     this.dormService = dormService;
   }
-  
+
   personSelector(person: People): void {
     this.person = person;
-  } 
+  }
 
   closePanel(): void {
     this.editActive = false;
@@ -30,7 +30,7 @@ export class ListPeopleComponent implements OnInit {
 
   openPanel(person: People): void {
     this.editActive = true;
-    this.person=person;
+    this.person = person;
   }
 
   ngOnInit(): void {
@@ -40,39 +40,38 @@ export class ListPeopleComponent implements OnInit {
 
   loadData(self: ListPeopleComponent): void {
     self.dormService.getAllPeopleAdmin().subscribe(p => {
-      self.people = []; 
+      self.people = [];
       for (const person of p) {
         self.people.push(Object.assign(new People(), person));
-      } 
-      console.log("data arrived")
+      }
     });
   }
 
   isPersonMachesFilter(person: People): boolean {
-    if (this.peopleFilterText === "" || typeof(this.peopleFilterText) === "undefined"){
+    if (this.peopleFilterText === '' || typeof(this.peopleFilterText) === 'undefined'){
       return true;
     }
-    
-    let searchText = "";
+
+    let searchText = '';
     switch (this.peopleFilterType) {
-      case "name":
+      case 'name':
         searchText = person.name.toUpperCase();
         break;
-      case "neptun":
+      case 'neptun':
         searchText = person.neptunId.toUpperCase();
         break;
-      case "email":
+      case 'email':
         searchText = person.email.toUpperCase();
         break;
       default:
         break;
     }
-    
-    return searchText.indexOf(this.peopleFilterText.toUpperCase()) != -1;
+
+    return searchText.indexOf(this.peopleFilterText.toUpperCase()) !== -1;
   }
 
   deletePerson(person: People): void{
-    if (confirm("Biztos, hogy törölni akarja " + person.name + " az adatbázisból?")){
+    if (confirm('Biztos, hogy törölni akarja ' + person.name + ' az adatbázisból?')){
       this.dormService.deletePerson(person).subscribe(status => {
         // if (status[0] === PeopleRequestStatus.OK){
         //   alert("Felhasználó törölve!");
@@ -104,7 +103,7 @@ export class ListPeopleComponent implements OnInit {
   }
 
   exportTable(): void{
-    console.log("soon");
-  }  
+    console.log('soon');
+  }
 
 }
