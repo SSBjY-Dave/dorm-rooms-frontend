@@ -338,6 +338,8 @@ class LabelAssociationData {
 }
 class ReservationData {
   constructor(person: People, room: Room) {
+    this.people = person;
+    this.room = room;
   }
 
   public readonly people: People;
