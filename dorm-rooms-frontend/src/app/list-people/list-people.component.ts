@@ -56,7 +56,7 @@ export class ListPeopleComponent implements OnInit {
     });
   }
 
-  isPersonMachesFilter(person: People): boolean {
+  isPersonMatchesFilter(person: People): boolean {
     if (this.peopleFilterText === '' || typeof(this.peopleFilterText) === 'undefined'){
       return true;
     }
@@ -109,6 +109,10 @@ export class ListPeopleComponent implements OnInit {
     else {
       this.dormService.associateRole(person, RoleType.ADMIN).subscribe(fazs => console.log(fazs));
     }
+  }
+
+  openReservation(): void{
+    
   }
 
   exportTable(): void{

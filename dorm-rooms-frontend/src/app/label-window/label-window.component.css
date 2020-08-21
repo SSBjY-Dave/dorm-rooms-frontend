@@ -3,7 +3,7 @@
     margin: 0 auto;
   }
   
-  .label_button {
+  .label {
     margin-left: 1em;
     cursor: pointer;
     text-align: center;
@@ -13,7 +13,7 @@
     float: left;
   }
   
-  .label_button:first-of-type {
+  .label:first-of-type {
     margin-left: 0;
   }
   

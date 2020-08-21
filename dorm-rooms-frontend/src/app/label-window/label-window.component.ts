@@ -10,44 +10,63 @@ export class LabelWindowComponent implements OnInit {
 
   private dormService: DormService;
   @Output() closeWindow = new EventEmitter();
-  public labels: Label[];
+  public labels: LabelWrapper[];
   public label: Label;
 
   constructor(dormService: DormService) {
     this.dormService = dormService;
-    this.dormService.getAllLabel().subscribe(l => {
+  }
+
+  ngOnInit(): void {
+    this.dormService.getAllLabel().subscribe(ls => {
       this.labels = [];
-      for (const label of l) {
-        this.labels.push(Object.assign(new Label(), label));
+      for (const l of ls) {
+        const label = Object.assign(new Label(), l);
+        this.labels.push(new LabelWrapper(false, label));
       }
     });
   }
 
   addLabel(label: Label): void {
     let labelName = prompt("Adjon meg nevet az új label-nek!");
-    let newLabel = new Label();
-    newLabel.name = labelName;
-    this.dormService.addLabel(newLabel).subscribe(l => {});
+    if (labelName !== null) {
+      let newLabel = new Label();
+      newLabel.name = labelName;
+      this.dormService.addLabel(newLabel).subscribe(l => {});
+    }
     //send the name to the dormService.addLabel() method
   }
 
-  editLabel(label: Label): void {
-    const labelName = prompt("Adjon meg új nevet a label-nek!");
-    let temp = JSON.parse(JSON.stringify(label));
-    temp.name = labelName;
-    this.dormService.modifyLabel(temp).subscribe(l => {});
+  editLabel(label: LabelWrapper): void {
+    label.state=true;
+  }
+
+  saveLabel(label: LabelWrapper): void {
+      //this.dormService.modifyLabel(label.label).subscribe(l => {});
+      label.state=false;
     //send the new name to the dormService.modifyLabel() method
   }
 
-  deleteLabel(label: Label): void {
-    if (confirm("Biztos, hogy törölni akarja " + label.name + " az adatbázisból?")){
-      this.dormService.deleteLabel(label).subscribe(l => {
+  cancel(label: LabelWrapper): void {
+    label.state=false;
+  }
+
+  deleteLabel(label: LabelWrapper): void {
+    if (confirm("Biztos, hogy törölni akarja " + label.label.name + " az adatbázisból?")){
+      this.dormService.deleteLabel(label.label).subscribe(l => {
         //TODO: status handling
       });
+      this.labels.splice(this.labels.indexOf(label), 1);
     }
   }
 
-  ngOnInit(): void {
-  }
+}
+export class LabelWrapper{
+  public state: boolean;
+  public label: Label;
 
+  constructor(state: boolean, label: Label) {
+    this.state = state;
+    this.label = label;
+  }
 }

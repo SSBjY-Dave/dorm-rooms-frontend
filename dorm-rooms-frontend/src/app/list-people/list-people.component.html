@@ -6,7 +6,8 @@
         <option value="neptun">Neptun</option>
         <option value="email">E-mail</option>
     </select>
-    <button (click)="exportTable()">Export</button>
+    <button (click)="exportTable()"><i class="fa fa-file-export"></i></button>
+    <button class="labels_button" (click)='openLabel()'>&nbsp;<i class="fa fa-tags"></i></button>
     </div>
     <br><br>
     <div class="edit_box" *ngIf = "editActive" id="editBox"><app-edit-window [person]="person" (closeWindow)='closePanel()'></app-edit-window></div>
@@ -21,17 +22,17 @@
         <th>Eszközök</th>
     </tr>
     <ng-template ngFor let-person [ngForOf]="people">
-    <tr *ngIf="isPersonMachesFilter(person)">
+    <tr *ngIf="isPersonMatchesFilter(person)">
         <td>{{person.name}}</td>
         <td>{{person.neptunId}}</td>
         <td>{{person.email}}</td>
         <td>{{person.sex}}</td>
         <td>
             <div class="admin_menu">
-                <button class="edit_button" (click)='openPanel(person)'>&nbsp;<i class="fa fa-pencil fa-lg"></i></button>
-                <button class="labels_button" (click)='openLabel()'>&nbsp;<i class="fa fa-tags fa-lg"></i></button>
-                <button class="admin_button" (click) ='setPersonAdmin(person)'>&nbsp;<i class="fa fa-user-circle fa-lg"></i><span *ngIf = "person.isAdmin">/</span></button>
-                <button class="remove_button" (click)='deletePerson(person)'>&nbsp;<i class="fa fa-trash fa-lg"></i></button>
+                <button class="edit_button" (click)='openPanel(person)'>&nbsp;<i class="fa fa-pencil"></i></button>
+                <button class="reservation_button" (click)='openReservation()'>&nbsp;<i class="fa fa-house-user"></i></button>
+                <button class="admin_button" (click) ='setPersonAdmin(person)'>&nbsp;<i class="fa fa-user-circle"></i><span *ngIf = "person.isAdmin">/</span></button>
+                <button class="remove_button" (click)='deletePerson(person)'>&nbsp;<i class="fa fa-trash"></i></button>
             </div>
         </td>
     </tr>
