@@ -42,7 +42,9 @@ export class LabelWindowComponent implements OnInit {
   }
 
   saveLabel(label: LabelWrapper): void {
-      //this.dormService.modifyLabel(label.label).subscribe(l => {});
+      this.dormService.modifyLabel(label.label).subscribe(l => {
+        console.log(l);
+      });
       label.state=false;
     //send the new name to the dormService.modifyLabel() method
   }
