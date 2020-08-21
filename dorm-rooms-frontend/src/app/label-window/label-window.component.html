@@ -9,7 +9,7 @@
                     </div>
                 </div>  
                 <div class="label_edit" [class.invisible]="!label.state">
-                    <input type=text ngModel="label.label.name">
+                    <input type=text [(ngModel)]="label.label.name">
                     <div class="buttons">
                         <button class="save" (click)='saveLabel(label)'>&nbsp;<i class="fa fa-check"></i></button>
                         <button class="cancel" (click)='cancel(label)'>&nbsp;<i class="fa fa-times"></i></button>
