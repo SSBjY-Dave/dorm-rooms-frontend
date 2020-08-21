@@ -14,8 +14,8 @@ export class ListPeopleComponent implements OnInit {
   public person: People;
   public peopleFilterText = '';
   public peopleFilterType = 'name';
-  public editActive = false;
-  public labelActive: boolean = false;
+  public peopleEditorActive = false;
+  public labelEditorActive: boolean = false;
 
   constructor(dormService: DormService) {
     this.dormService = dormService;
@@ -25,21 +25,21 @@ export class ListPeopleComponent implements OnInit {
     this.person = person;
   } 
   
-  openPanel(person: People): void {
-    this.editActive = true;
+  openPeopleEditor(person: People): void {
+    this.peopleEditorActive = true;
     this.person=person;
   }
   
-  closePanel(): void {
-    this.editActive = false;
+  closePeopleEditor(): void {
+    this.peopleEditorActive = false;
   }
 
-  openLabel(): void {
-    this.labelActive = true;
+  openLabelEditor(): void {
+    this.labelEditorActive = true;
   }
 
-  closeLabel(): void {
-    this.labelActive = false;
+  closeLabelEditor(): void {
+    this.labelEditorActive = false;
   }
 
   ngOnInit(): void {

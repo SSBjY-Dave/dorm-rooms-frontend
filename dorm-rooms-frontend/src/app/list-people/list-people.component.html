@@ -10,8 +10,8 @@
     <button class="labels_button" (click)='openLabel()'>&nbsp;<i class="fa fa-tags"></i></button>
     </div>
     <br><br>
-    <div class="edit_box" *ngIf = "editActive" id="editBox"><app-edit-window [person]="person" (closeWindow)='closePanel()'></app-edit-window></div>
-    <div class="label_box" *ngIf = "labelActive" id="labelBox"><app-label-window (closeWindow)='closeLabel()'></app-label-window></div>
+    <div class="edit_box" *ngIf = "peopleEditorActive" id="editBox"><app-edit-window [person]="person" (closeWindow)='closePeopleEditor()'></app-edit-window></div>
+    <div class="label_box" *ngIf = "labelEditorActive" id="labelBox"><app-label-window (closeWindow)='closeLabelEditor()'></app-label-window></div>
 
     <table>
     <tr>
