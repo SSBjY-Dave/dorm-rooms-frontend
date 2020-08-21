@@ -7,7 +7,7 @@
         <option value="email">E-mail</option>
     </select>
     <button (click)="exportTable()"><i class="fa fa-file-export"></i></button>
-    <button class="labels_button" (click)='openLabel()'>&nbsp;<i class="fa fa-tags"></i></button>
+    <button class="labels_button" (click)='openLabelEditor()'>&nbsp;<i class="fa fa-tags"></i></button>
     </div>
     <br><br>
     <div class="edit_box" *ngIf = "peopleEditorActive" id="editBox"><app-edit-window [person]="person" (closeWindow)='closePeopleEditor()'></app-edit-window></div>
@@ -29,7 +29,7 @@
         <td>{{person.sex}}</td>
         <td>
             <div class="admin_menu">
-                <button class="edit_button" (click)='openPanel(person)'>&nbsp;<i class="fa fa-pencil"></i></button>
+                <button class="edit_button" (click)='openPeopleEditor(person)'>&nbsp;<i class="fa fa-pencil"></i></button>
                 <button class="reservation_button" (click)='openReservation()'>&nbsp;<i class="fa fa-house-user"></i></button>
                 <button class="admin_button" (click) ='setPersonAdmin(person)'>&nbsp;<i class="fa fa-user-circle"></i><span *ngIf = "person.isAdmin">/</span></button>
                 <button class="remove_button" (click)='deletePerson(person)'>&nbsp;<i class="fa fa-trash"></i></button>
