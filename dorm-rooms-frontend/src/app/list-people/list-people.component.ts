@@ -121,10 +121,6 @@ export class ListPeopleComponent implements OnInit {
     }
   }
 
-  openReservation(): void{
-    
-  }
-
   exportTable(): void{
     console.log('soon');
   }
