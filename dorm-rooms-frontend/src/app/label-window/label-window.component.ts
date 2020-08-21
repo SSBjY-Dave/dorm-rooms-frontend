@@ -76,6 +76,10 @@ export class LabelWindowComponent implements OnInit {
     }
   }
 
+  closePanel(): void {
+    this.closeWindow.emit();
+  }
+
 }
 export class LabelWrapper{
   public state: boolean;
