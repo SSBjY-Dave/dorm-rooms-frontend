@@ -38,7 +38,7 @@ export class LabelWindowComponent implements OnInit {
       let newLabel = new Label();
       newLabel.name = this.newLabelName;
       this.dormService.addLabel(newLabel).subscribe(l => {
-
+        console.log(l);
       });
       this.labelCreation=false;
       this.newLabelName = '';
