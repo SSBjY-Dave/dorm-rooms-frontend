@@ -1,0 +1,21 @@
+<div class="page_overlay">
+  <div style="height: 90%" id="reservation-modify">
+    <div class="close-button" (click)="closeOverlay()">X</div>
+    Válaszd ki hova kerüljön {{person.name}} ({{person.neptunId}})
+    <ng-template ngFor let-floor [ngForOf]="building" let-i="index">
+      <section [class.active]="shownFloor === i">
+        <div (click)="showFloor(i)">{{floor.level}}. em</div>
+        <ng-template ngFor let-room [ngForOf]="floor.rooms">
+          <article (click)="assignToRoom(room)">
+            <div>{{room.id}}</div>
+            <div>
+              <ng-template ngFor let-reservation [ngForOf]="room.roomConnectors">
+                <span>{{reservation.people.name}} ({{reservation.people.neptunId}})</span>
+              </ng-template>
+            </div>
+          </article>
+        </ng-template>
+      </section>
+    </ng-template>
+  </div>
+</div>

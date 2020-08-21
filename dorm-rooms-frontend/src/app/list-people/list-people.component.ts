@@ -15,6 +15,7 @@ export class ListPeopleComponent implements OnInit {
   public peopleFilterText = '';
   public peopleFilterType = 'name';
   public editActive = false;
+  public reservationModificationActive = false;
 
   constructor(dormService: DormService) {
     this.dormService = dormService;
@@ -28,8 +29,17 @@ export class ListPeopleComponent implements OnInit {
     this.editActive = false;
   }
 
+  closeReservationModification(): void {
+    this.reservationModificationActive = false;
+  }
+
   openPanel(person: People): void {
     this.editActive = true;
+    this.person = person;
+  }
+
+  openReservation(person: People): void {
+    this.reservationModificationActive = true;
     this.person = person;
   }
 
