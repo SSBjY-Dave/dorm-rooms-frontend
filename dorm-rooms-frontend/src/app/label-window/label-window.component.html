@@ -15,18 +15,18 @@
                         <button class="cancel" (click)='cancel(label)'>&nbsp;<i class="fa fa-times"></i></button>
                     </div>
                 </div>
-              <div class="label">
-                    <div class="add" (click)='createALabel()' [class.invisible]="labelCreation">+</div>
-                    <div class="label_edit" [class.invisible]="!labelCreation">
-                        <input type=text [(ngModel)]="newLabelName">
-                        <div class="buttons">
-                            <button class="save" (click)='addLabel()'>&nbsp;<i class="fa fa-check"></i></button>
-                            <button class="cancel" (click)='cancelNewLabel()'>&nbsp;<i class="fa fa-times"></i></button>
-                        </div>
-                    </div>
-              </div>
-              <div *ngIf="last" class="clear-fix"></div>
+                <div *ngIf="last" class="clear-fix"></div>
             </ng-template>
+                      <div class="label">
+                            <div class="add" (click)='createALabel()' [class.invisible]="labelCreation">+</div>
+                            <div class="label_edit" [class.invisible]="!labelCreation">
+                                <input type=text [(ngModel)]="newLabelName">
+                                <div class="buttons">
+                                    <button class="save" (click)='addLabel()'>&nbsp;<i class="fa fa-check"></i></button>
+                                    <button class="cancel" (click)='cancelNewLabel()'>&nbsp;<i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                      </div>
           </div>
     </div>
 </div>
