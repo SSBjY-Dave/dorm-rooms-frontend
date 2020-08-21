@@ -9,8 +9,8 @@ import {MainComponents} from '../app.component';
   styleUrls: ['./info-box.component.css']
 })
 export class InfoBoxComponent implements OnInit, OnDestroy {
-  @Input('uiSwitchEmitter') uiSwitchEmitter: EventEmitter<MainComponents>;
-  @Input('currentMainComponent') currentMainComponent: MainComponents;
+  @Input() uiSwitchEmitter: EventEmitter<MainComponents>;
+  @Input() currentMainComponent: MainComponents;
 
   private dormService: DormService;
   private reloadDaemonSubscription: Subscription;

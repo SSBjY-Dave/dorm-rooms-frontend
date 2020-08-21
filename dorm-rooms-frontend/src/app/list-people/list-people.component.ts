@@ -16,6 +16,7 @@ export class ListPeopleComponent implements OnInit {
   public peopleFilterType = 'name';
   public peopleEditorActive = false;
   public labelEditorActive: boolean = false;
+  public reservationModificationActive = false;
 
   constructor(dormService: DormService) {
     this.dormService = dormService;
@@ -38,8 +39,17 @@ export class ListPeopleComponent implements OnInit {
     this.labelEditorActive = true;
   }
 
+  closeReservationModification(): void {
+    this.reservationModificationActive = false;
+  }
+
   closeLabelEditor(): void {
     this.labelEditorActive = false;
+  }
+
+  openReservation(person: People): void {
+    this.reservationModificationActive = true;
+    this.person = person;
   }
 
   ngOnInit(): void {

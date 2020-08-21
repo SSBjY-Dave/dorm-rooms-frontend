@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { EditWindowComponent } from './edit-window/edit-window.component';
 import { NotificationBoxComponent } from './notification-box/notification-box.component';
+import { ReservationModifyComponent } from './reservation-modify/reservation-modify.component';
 import { LabelWindowComponent } from './label-window/label-window.component';
 
 @NgModule({
@@ -20,6 +21,7 @@ import { LabelWindowComponent } from './label-window/label-window.component';
     ListPeopleComponent,
     NotificationBoxComponent,
     EditWindowComponent,
+    ReservationModifyComponent,
     LabelWindowComponent
   ],
   imports: [

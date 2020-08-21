@@ -12,6 +12,7 @@
     <br><br>
     <div class="edit_box" *ngIf = "peopleEditorActive" id="editBox"><app-edit-window [person]="person" (closeWindow)='closePeopleEditor()'></app-edit-window></div>
     <div class="label_box" *ngIf = "labelEditorActive" id="labelBox"><app-label-window (closeWindow)='closeLabelEditor()'></app-label-window></div>
+    <div class="reservation-box" *ngIf="reservationModificationActive"><app-reservation-modify [person]="person" (closeWindow)="closeReservationModification()"></app-reservation-modify></div>
 
     <table>
     <tr>
@@ -30,7 +31,7 @@
         <td>
             <div class="admin_menu">
                 <button class="edit_button" (click)='openPeopleEditor(person)'>&nbsp;<i class="fa fa-pencil"></i></button>
-                <button class="reservation_button" (click)='openReservation()'>&nbsp;<i class="fa fa-house-user"></i></button>
+                <button class="reservation_button" (click)='openReservation(person)'>&nbsp;<i class="fa fa-house-user"></i></button>
                 <button class="admin_button" (click) ='setPersonAdmin(person)'>&nbsp;<i class="fa fa-user-circle"></i><span *ngIf = "person.isAdmin">/</span></button>
                 <button class="remove_button" (click)='deletePerson(person)'>&nbsp;<i class="fa fa-trash"></i></button>
             </div>

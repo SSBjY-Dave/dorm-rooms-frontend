@@ -1,0 +1,42 @@
+.page_overlay>div {
+  overflow-y: scroll;
+}
+section {
+  border-top: 1px solid #555;
+}
+section:first-of-type {
+  border: 0;
+}
+section>div {
+  background-color: darkblue;
+  text-align: center;
+  color: white;
+  cursor: pointer;
+}
+section>article {
+  display: flex;
+  height: 0;
+  overflow: hidden;
+  transition: height 250ms;
+  cursor: pointer;
+}
+section.active>article {
+  height: 2.5em;
+}
+section>article:nth-child(odd) {
+  background-color: rgb(190, 230, 255);
+}
+section>article:nth-child(even) {
+  background-color: rgb(228, 241, 255);
+}
+section>article:hover {
+  background-color: #ddd;
+}
+section>article>div:first-of-type {
+  width: 4em;
+  text-align: center;
+  line-height: 2.5em;
+}
+section>article>div:last-of-type>span {
+  display: block;
+}
