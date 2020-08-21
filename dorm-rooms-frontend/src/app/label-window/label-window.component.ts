@@ -12,6 +12,8 @@ export class LabelWindowComponent implements OnInit {
   @Output() closeWindow = new EventEmitter();
   public labels: LabelWrapper[];
   public label: Label;
+  public labelCreation: boolean;
+  public newLabelName: string = '';
 
   constructor(dormService: DormService) {
     this.dormService = dormService;
@@ -27,14 +29,26 @@ export class LabelWindowComponent implements OnInit {
     });
   }
 
-  addLabel(label: Label): void {
-    let labelName = prompt("Adjon meg nevet az új label-nek!");
-    if (labelName !== null) {
+  createALabel(): void {
+    this.labelCreation = true;
+  }
+
+  addLabel(): void {
+    if (this.newLabelName !== null) {
       let newLabel = new Label();
-      newLabel.name = labelName;
-      this.dormService.addLabel(newLabel).subscribe(l => {});
+      newLabel.name = this.newLabelName;
+      this.dormService.addLabel(newLabel).subscribe(l => {
+
+      });
+      this.labelCreation=false;
+      this.newLabelName = '';
     }
     //send the name to the dormService.addLabel() method
+  }
+
+  cancelNewLabel(): void {
+    this.labelCreation = false;
+    this.newLabelName = '';
   }
 
   editLabel(label: LabelWrapper): void {
