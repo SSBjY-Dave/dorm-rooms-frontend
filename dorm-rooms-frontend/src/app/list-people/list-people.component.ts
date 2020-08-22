@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
 import { DormService, People, PeopleRequestStatus, RoleType } from '../dorm.service';
 import { AppComponent } from '../app.component';
+import { saveAs } from 'file-saver';
+import * as FileSaver from 'file-saver';
+import {Urls} from '../urls';
 
 @Component({
   selector: 'app-list-people',
@@ -123,20 +126,10 @@ export class ListPeopleComponent implements OnInit {
 
   exportTable(): void{
     AppComponent.messageEvent.emit('Az exportálás elkezdődött, kérlek ne indítsd el mégegyszer párhuzamosan!!!');
-    this.dormService.getExportData().subscribe(data => {
-      const blob = new Blob([data], { type: 'application/vnd.ms-excel'});
-      const downloadUrl = URL.createObjectURL(blob);
-      const downloadDate = new Date();
-
-      const dummyAnchorElement = document.createElement('a') as HTMLAnchorElement;
-      dummyAnchorElement.href = downloadUrl;
-      dummyAnchorElement.download = 'ADK_export_' + downloadDate.getFullYear() + '-' + downloadDate.getMonth() + '-' + downloadDate.getDay()
-                                      + ' ' + downloadDate.getHours() + ':' + downloadDate.getMinutes() + ':' + downloadDate.getSeconds();
-      document.body.appendChild(dummyAnchorElement);
-      dummyAnchorElement.click();
-      document.body.removeChild(dummyAnchorElement);
-      URL.revokeObjectURL(downloadUrl);
-    });
+    const downloadDate = new Date();
+    FileSaver.saveAs(Urls.UTILITY_EXPORT_DATA,
+      'ADK_export_' + downloadDate.getFullYear() + '-' + downloadDate.getMonth() + '-' + downloadDate.getDay()
+              + ' ' + downloadDate.getHours() + ':' + downloadDate.getMinutes() + ':' + downloadDate.getSeconds());
   }
 
 }
