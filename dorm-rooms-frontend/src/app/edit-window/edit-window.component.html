@@ -7,10 +7,10 @@
       <div class="label-container">
         <ng-template ngFor let-label [ngForOf]="labels" let-last="last">
             <div
-              [class.bg-highlight]="hasLabel(label)"
-              [class.bg-text-highlight]="hasLabel(label)"
-              [class.bg-normal]="!hasLabel(label)"
-              class="label_button" (click)="toggleLabel(label)" >{{label.name}}</div>
+              [class.bg-highlight]="label.state"
+              [class.bg-text-highlight]="label.state"
+              [class.bg-normal]="!label.state"
+              class="label_button" (click)="toggleLabel(label)" >{{label.label.name}}</div>
           <div *ngIf="last" class="clear-fix"></div>
         </ng-template>
       </div>

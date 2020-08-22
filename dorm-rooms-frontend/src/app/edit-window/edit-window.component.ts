@@ -13,7 +13,7 @@ export class EditWindowComponent implements OnInit {
   private appComponent: AppComponent;
   @Input() person: People;
   @Output() closeWindow = new EventEmitter();
-  public labels: Label[];
+  public labels: LabelWrapper[];
   public label: Label;
   public temp: People;
   public regExpName = /^\p{Lu}[\p{Ll}]+( \p{Lu}[\p{Ll}]+)+$/u;
@@ -26,10 +26,11 @@ export class EditWindowComponent implements OnInit {
 
   ngOnInit(): void {
     this.temp = JSON.parse(JSON.stringify(this.person));
-    this.dormService.getAllLabel().subscribe(l => {
+    this.dormService.getAllLabel().subscribe(ls => {
       this.labels = [];
-      for (const label of l) {
-        this.labels.push(Object.assign(new Label(), label));
+      for (const l of ls) {
+        const label = Object.assign(new Label(), l);
+        this.labels.push(new LabelWrapper(this.hasLabel(label), label));
       }
     });
   }
@@ -38,13 +39,8 @@ export class EditWindowComponent implements OnInit {
     return (this.temp.labelConnectors.findIndex(lc => lc.label.id === label.id) !== -1);
   }
 
-  toggleLabel(label: Label): void {
-    if (this.hasLabel(label)) {
-      this.dormService.disassociateLabel(this.temp, label).subscribe(res => console.log(res));
-    }
-    else {
-      this.dormService.associateLabel(this.temp, label).subscribe(res => console.log(res));
-    }
+  toggleLabel(label: LabelWrapper): void {
+    label.state = !label.state;
   }
 
   regexValid(): boolean {
@@ -73,6 +69,17 @@ export class EditWindowComponent implements OnInit {
         // TODO: handle status messages
          // console.log(status);
       });
+      this.labels.forEach(l => {
+        if (l.state !== this.hasLabel(l.label)){
+          if (l.state){
+            this.dormService.associateLabel(this.person, l.label);
+          }
+          else {
+            this.dormService.disassociateLabel(this.person, l.label);
+          }
+        }
+      });
+
       AppComponent.messageEvent.emit('Mentés sikeres!');
       this.closeWindow.emit();
     }
@@ -89,4 +96,14 @@ export class EditWindowComponent implements OnInit {
     AppComponent.messageEvent.emit('Adatok alaphelyzetbe állítva!');
   }
 
+}
+
+export class LabelWrapper{
+  public state: boolean;
+  public label: Label;
+
+  constructor(state: boolean, label: Label) {
+    this.state = state;
+    this.label = label;
+  }
 }

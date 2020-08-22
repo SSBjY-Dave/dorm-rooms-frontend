@@ -14,7 +14,8 @@ export class ListPeopleComponent implements OnInit {
   public person: People;
   public peopleFilterText = '';
   public peopleFilterType = 'name';
-  public editActive = false;
+  public peopleEditorActive = false;
+  public labelEditorActive: boolean = false;
   public reservationModificationActive = false;
 
   constructor(dormService: DormService) {
@@ -23,19 +24,27 @@ export class ListPeopleComponent implements OnInit {
 
   personSelector(person: People): void {
     this.person = person;
+  } 
+  
+  openPeopleEditor(person: People): void {
+    this.peopleEditorActive = true;
+    this.person=person;
+  }
+  
+  closePeopleEditor(): void {
+    this.peopleEditorActive = false;
   }
 
-  closePanel(): void {
-    this.editActive = false;
+  openLabelEditor(): void {
+    this.labelEditorActive = true;
   }
 
   closeReservationModification(): void {
     this.reservationModificationActive = false;
   }
 
-  openPanel(person: People): void {
-    this.editActive = true;
-    this.person = person;
+  closeLabelEditor(): void {
+    this.labelEditorActive = false;
   }
 
   openReservation(person: People): void {
@@ -57,7 +66,7 @@ export class ListPeopleComponent implements OnInit {
     });
   }
 
-  isPersonMachesFilter(person: People): boolean {
+  isPersonMatchesFilter(person: People): boolean {
     if (this.peopleFilterText === '' || typeof(this.peopleFilterText) === 'undefined'){
       return true;
     }

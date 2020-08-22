@@ -1,0 +1,19 @@
+  .label-container {
+    width: max-content;
+    margin: 0 auto;
+  }
+  
+  .label {
+    margin-left: 1em;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 1.5rem;
+    padding: 0.5rem;
+    min-width: 5rem;
+    float: left;
+  }
+  
+  .label:first-of-type {
+    margin-left: 0;
+  }
+  

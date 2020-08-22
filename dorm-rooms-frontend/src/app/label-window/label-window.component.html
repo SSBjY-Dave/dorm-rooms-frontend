@@ -1,0 +1,33 @@
+<div class="page_overlay">
+    <div style="width: 150rem; height: 40rem">
+        <div class="close_button" (click)="closePanel()">X</div>
+        <div class="label-container">
+            <ng-template ngFor let-label [ngForOf]="labels" let-last="last">
+                <div class="label" [class.invisible]="label.state">{{label.label.name}}
+                    <div class="buttons">
+                        <button class="edit_button" (click)='editLabel(label)'>&nbsp;<i class="fa fa-pencil"></i></button>
+                        <button class="remove_button" (click)='deleteLabel(label)'>&nbsp;<i class="fa fa-trash"></i></button>
+                    </div>
+                </div>  
+                <div class="label_edit" [class.invisible]="!label.state">
+                    <input type=text [(ngModel)]="label.label.name">
+                    <div class="buttons">
+                        <button class="save" (click)='saveLabel(label)'>&nbsp;<i class="fa fa-check"></i></button>
+                        <button class="cancel" (click)='cancel(label)'>&nbsp;<i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <div *ngIf="last" class="clear-fix"></div>
+            </ng-template>
+                      <div class="label">
+                            <div class="add" (click)='createALabel()' [class.invisible]="labelCreation">+</div>
+                            <div class="label_edit" [class.invisible]="!labelCreation">
+                                <input type=text [(ngModel)]="newLabelName">
+                                <div class="buttons">
+                                    <button class="save" (click)='addLabel()'>&nbsp;<i class="fa fa-check"></i></button>
+                                    <button class="cancel" (click)='cancelNewLabel()'>&nbsp;<i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                      </div>
+          </div>
+    </div>
+</div>

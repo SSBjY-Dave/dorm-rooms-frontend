@@ -67,13 +67,14 @@ export class ReservationComponent implements OnInit, AfterViewInit {
             this.currentPerson.roomConnector.room.id === roomWrapper.room.id;
   }
 
-  public isSexChangeAllowed(room: Room): boolean {
-    if (room.roomConnectors.length < 2) { return true; }
+  public isSexChangeAllowed(room: RoomWrapper): boolean {
+    const r = room.room;
+    if (r.roomConnectors.length < 2) { return true; }
     let i = 1;
-    while (i < room.roomConnectors.length && room.roomConnectors[i].people.sex === room.roomConnectors[i - 1].people.sex) {
+    while (i < r.roomConnectors.length && r.roomConnectors[i].people.sex === r.roomConnectors[i - 1].people.sex) {
       ++i;
     }
-    return i === room.roomConnectors.length;
+    return i === r.roomConnectors.length;
   }
 
   public fullRoomNumber(level: number, roomNumber: number): string {
