@@ -35,10 +35,20 @@
             [style.top]="convertPxToRem(calculateRoomY(room.offset.y) + calculateRoomX(room.size.height) / 2)"
             [style.left]="convertPxToRem(calculateRoomX(room.offset.x) + calculateRoomX(room.size.width))"
             *ngIf="currentPerson.isAdmin || isPersonInRoom(room)">
-            <i *ngIf="currentPerson.isAdmin || (room.room.sex !== 'FEMALE' && currentPerson.sex === 'FEMALE')" class="fa fa-venus" (click)="setRoomSex(room, 'FEMALE')"></i>
-            <i *ngIf="currentPerson.isAdmin || (room.room.sex !== 'MALE' && currentPerson.sex === 'MALE')" class="fa fa-mars" (click)="setRoomSex(room, 'MALE')"></i>
-            <i *ngIf="currentPerson.isAdmin || room.room.sex !== 'ANY'" class="fa fa-transgender" (click)="setRoomSex(room, 'ANY')"></i>
-            <i *ngIf="currentPerson.isAdmin" class="fa"
+            <i *ngIf="currentPerson.isAdmin || (
+                        room.room.sex !== 'FEMALE' &&
+                        currentPerson.sex === 'FEMALE' &&
+                        isSexChangeAllowed(room))"
+               class="fa fa-venus" (click)="setRoomSex(room, 'FEMALE')"></i>
+            <i *ngIf="currentPerson.isAdmin || (
+                        room.room.sex !== 'MALE' &&
+                        currentPerson.sex === 'MALE' &&
+                        isSexChangeAllowed(room))"
+               class="fa fa-mars" (click)="setRoomSex(room, 'MALE')"></i>
+            <i *ngIf="currentPerson.isAdmin || room.room.sex !== 'ANY'"
+               class="fa fa-transgender" (click)="setRoomSex(room, 'ANY')"></i>
+            <i *ngIf="currentPerson.isAdmin"
+               class="fa"
                [class.fa-unlock]="room.room.locked"
                [class.fa-lock]="!room.room.locked"
                (click)="setRoomLockedState(room, !room.room.locked)"></i>
