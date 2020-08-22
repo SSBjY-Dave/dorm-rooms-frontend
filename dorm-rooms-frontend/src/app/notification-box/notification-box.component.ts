@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AppComponent} from '../app.component';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-notification-box',
@@ -30,8 +30,11 @@ export class NotificationBoxComponent implements OnInit {
   }
 
   doNotificationAnimation(self: NotificationBoxComponent): void {
+    const notificationBox = document.getElementsByClassName('notification-box')[0];
     if (self.notificationList.length === 0 && !self.showNotification) {
       self.notificationAnimationActive = false;
+      setTimeout((notificationElement) =>
+        notificationElement.classList.add('invisible'), NotificationBoxComponent.NOTIFICATION_ANIMATION_TIME, notificationBox);
       return;
     }
     self.notificationAnimationActive = true;
@@ -42,6 +45,7 @@ export class NotificationBoxComponent implements OnInit {
       if (!self.animationPaused) {
         self.notificationMessage = self.notificationList[0];
         self.notificationList = self.notificationList.slice(1);
+        notificationBox.classList.remove('invisible');
         self.showNotification = true;
         setTimeout(self.doNotificationAnimation, NotificationBoxComponent.NOTIFICATION_VISIBLE_TIME, self);
       } else {
@@ -51,7 +55,6 @@ export class NotificationBoxComponent implements OnInit {
   }
 
   pauseAnimation(): void {
-    console.log("asdkekfasz");
     this.animationPaused = true;
   }
 

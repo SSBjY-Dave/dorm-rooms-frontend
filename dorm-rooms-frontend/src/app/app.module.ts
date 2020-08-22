@@ -8,7 +8,9 @@ import { ListPeopleComponent } from './list-people/list-people.component';
 import { DormService } from './dorm.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { EditWindowComponent } from './edit-window/edit-window.component';
 import { NotificationBoxComponent } from './notification-box/notification-box.component';
+import { ReservationModifyComponent } from './reservation-modify/reservation-modify.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { NotificationBoxComponent } from './notification-box/notification-box.co
     ReservationComponent,
     InfoBoxComponent,
     ListPeopleComponent,
-    NotificationBoxComponent
+    NotificationBoxComponent,
+    EditWindowComponent,
+    ReservationModifyComponent
   ],
   imports: [
     BrowserModule,
