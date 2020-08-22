@@ -1,5 +1,5 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {DormService, People, Room, Sex} from '../dorm.service';
+import {DormService, People, Room, RoomConnector, Sex} from '../dorm.service';
 import {HttpClient} from '@angular/common/http';
 import {AppComponent} from '../app.component';
 
@@ -65,6 +65,15 @@ export class ReservationComponent implements OnInit, AfterViewInit {
   public isPersonInRoom(roomWrapper: RoomWrapper): boolean {
     return  this.currentPerson.roomConnector !== undefined && this.currentPerson.roomConnector !== null &&
             this.currentPerson.roomConnector.room.id === roomWrapper.room.id;
+  }
+
+  public isSexChangeAllowed(room: Room): boolean {
+    if (room.roomConnectors.length < 2) { return true; }
+    let i = 1;
+    while (i < room.roomConnectors.length && room.roomConnectors[i].people.sex === room.roomConnectors[i - 1].people.sex) {
+      ++i;
+    }
+    return i === room.roomConnectors.length;
   }
 
   public fullRoomNumber(level: number, roomNumber: number): string {
@@ -139,7 +148,7 @@ export class ReservationComponent implements OnInit, AfterViewInit {
   }
 
   private loadData(self: ReservationComponent): void {
-    self.dormService.getCurrentPerson().subscribe(p => this.currentPerson = Object.assign(new People(), p))
+    self.dormService.getCurrentPerson().subscribe(p => this.currentPerson = Object.assign(new People(), p));
     self.loadRooms(self);
   }
 
