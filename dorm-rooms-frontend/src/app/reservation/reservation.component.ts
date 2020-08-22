@@ -1,5 +1,5 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {DormService, People, Room, RoomConnector, Sex} from '../dorm.service';
+import {DormService, People, ReservationRequestStatus, Room, RoomConnector, Sex} from '../dorm.service';
 import {HttpClient} from '@angular/common/http';
 import {AppComponent} from '../app.component';
 
@@ -50,16 +50,38 @@ export class ReservationComponent implements OnInit, AfterViewInit {
     this.hidePageOverlay();
     roomWrapper.operationPending = true;
     if (!this.currentPerson.hasRoom) {
-      this.dormService.applyForRoom(roomWrapper.room).subscribe(res => {
-        console.log(res);
-        roomWrapper.operationPending = true;
-      });
+      this.dormService.applyForRoom(roomWrapper.room).subscribe(this.reservationResultHandler);
     } else if (!this.isPersonInRoom(roomWrapper)) {
-      this.dormService.changeRoom(roomWrapper.room).subscribe(res => {
-        console.log(res);
-        roomWrapper.operationPending = true;
-      });
+      this.dormService.changeRoom(roomWrapper.room).subscribe(this.reservationResultHandler);
     }
+  }
+
+  public reservationResultHandler(result: ReservationRequestStatus): void {
+    let message = '';
+    switch (result) {
+      case ReservationRequestStatus.OK:
+        message = 'Jelentkezés sikeres';
+        break;
+      case ReservationRequestStatus.RESERVATION_ALREADY_EXISTS:
+        message = 'Már jelentkeztél ebbe a szobába';
+        break;
+      case ReservationRequestStatus.DATA_RACE_LOST:
+        message = 'Megelőztek a jelentkezésben';
+        break;
+      case ReservationRequestStatus.ROOM_ALREADY_FULL:
+        message = 'A szoba tele van';
+        break;
+      case ReservationRequestStatus.ROOM_IS_LOCKED:
+        message = 'A szoba zárolva van';
+        break;
+      case ReservationRequestStatus.SEX_INVALID:
+        message = 'A szoba az ellenkező neműeknek elérhető';
+        break;
+      default:
+        message = ReservationRequestStatus[result];
+        break;
+    }
+    AppComponent.messageEvent.emit(message);
   }
 
   public isPersonInRoom(roomWrapper: RoomWrapper): boolean {
