@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
 import { DormService, People, PeopleRequestStatus, RoleType } from '../dorm.service';
 import { AppComponent } from '../app.component';
+import { saveAs } from 'file-saver';
+import * as FileSaver from 'file-saver';
+import {Urls} from '../urls';
 
 @Component({
   selector: 'app-list-people',
@@ -24,13 +27,13 @@ export class ListPeopleComponent implements OnInit {
 
   personSelector(person: People): void {
     this.person = person;
-  } 
-  
+  }
+
   openPeopleEditor(person: People): void {
     this.peopleEditorActive = true;
     this.person=person;
   }
-  
+
   closePeopleEditor(): void {
     this.peopleEditorActive = false;
   }
@@ -122,7 +125,11 @@ export class ListPeopleComponent implements OnInit {
   }
 
   exportTable(): void{
-    console.log('soon');
+    AppComponent.messageEvent.emit('Az exportálás elkezdődött, kérlek ne indítsd el mégegyszer párhuzamosan!!!');
+    const downloadDate = new Date();
+    FileSaver.saveAs(Urls.UTILITY_EXPORT_DATA,
+      'ADK_export_' + downloadDate.getFullYear() + '-' + downloadDate.getMonth() + '-' + downloadDate.getDay()
+              + ' ' + downloadDate.getHours() + ':' + downloadDate.getMinutes() + ':' + downloadDate.getSeconds());
   }
 
 }
