@@ -1,5 +1,5 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {DormService, People, ReservationRequestStatus, Room, RoomConnector, Sex} from '../dorm.service';
+import {DormService, People, ReservationRequestStatus, Room, RoomConnector, RoomRequestStatus, Sex} from '../dorm.service';
 import {HttpClient} from '@angular/common/http';
 import {AppComponent} from '../app.component';
 
@@ -50,8 +50,12 @@ export class ReservationComponent implements OnInit, AfterViewInit {
     this.hidePageOverlay();
     roomWrapper.operationPending = true;
     if (!this.currentPerson.hasRoom) {
+      // For some idiotic reason the type juggle will convert the enum to a string, but the linter says otherwise....
+      // @ts-ignore
       this.dormService.applyForRoom(roomWrapper.room).subscribe(this.reservationResultHandler);
     } else if (!this.isPersonInRoom(roomWrapper)) {
+      // For some idiotic reason the type juggle will convert the enum to a string, but the linter says otherwise....
+      // @ts-ignore
       this.dormService.changeRoom(roomWrapper.room).subscribe(this.reservationResultHandler);
     }
   }
@@ -134,7 +138,23 @@ export class ReservationComponent implements OnInit, AfterViewInit {
   public setRoomSex(room: RoomWrapper, sexStr: string): void {
     const sex = Sex[sexStr];
     room.operationPending = true;
-    this.dormService.setRoomAllowedSex(room.room, sex).subscribe(() => room.operationPending = true);
+    // For some idiotic reason the type juggle will convert the enum to a string, but the linter says otherwise....
+    // @ts-ignore
+    this.dormService.setRoomAllowedSex(room.room, sex).subscribe(this.sexChangeResultHandler);
+  }
+
+  public sexChangeResultHandler(resStr: string): void {
+    const result = RoomRequestStatus[resStr];
+    let message = '';
+    switch (result) {
+      case RoomRequestStatus.OK:
+        message = 'Szoba nem beállítás sikeres';
+        break;
+      default:
+        message = RoomRequestStatus[result];
+        break;
+    }
+    AppComponent.messageEvent.emit(message);
   }
 
   public clearRoom(room: RoomWrapper): void {
@@ -145,6 +165,20 @@ export class ReservationComponent implements OnInit, AfterViewInit {
   public setRoomLockedState(room: RoomWrapper, lockState: boolean): void {
     room.operationPending = true;
     this.dormService.setRoomLockState(room.room, lockState);
+  }
+
+  public lockStateChangeResultHandler(resStr: string): void {
+    const result = RoomRequestStatus[resStr];
+    let message = '';
+    switch (result) {
+      case RoomRequestStatus.OK:
+        message = 'Szoba zárolási állapot változtatás sikeres';
+        break;
+      default:
+        message = RoomRequestStatus[result];
+        break;
+    }
+    AppComponent.messageEvent.emit(message);
   }
 
   private setDefaults(): void {
@@ -229,7 +263,6 @@ export class ReservationComponent implements OnInit, AfterViewInit {
   }
 
   public showFloor(floorIndex: number): void {
-    // if ($("#page_overlay").hasClass("active")) return;
     const floors = document.getElementsByClassName('floor');
     if (floorIndex < 0 || floors.length <= floorIndex) { return; }
     // warning suspended because HTMLTagCollection doesn't have an iterator

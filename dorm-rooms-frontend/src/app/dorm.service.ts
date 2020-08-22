@@ -316,7 +316,8 @@ export enum RoomRequestStatus {
   ID_INVALID,
   LEVEL_INVALID, LEVEL_DOES_NOT_EXISTS,
   ROOM_NUMBER_INVALID, ROOM_NUMBER_DOES_NOT_EXISTS,
-  LOCK_STATE_INVALID
+  LOCK_STATE_INVALID,
+  SEX_INVALID
 }
 class RoleAssociationData {
   constructor(person: People, roleType: RoleType) {
