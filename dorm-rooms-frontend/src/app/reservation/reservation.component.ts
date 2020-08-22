@@ -56,7 +56,8 @@ export class ReservationComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public reservationResultHandler(result: ReservationRequestStatus): void {
+  public reservationResultHandler(resStr: string): void {
+    const result = ReservationRequestStatus[resStr];
     let message = '';
     switch (result) {
       case ReservationRequestStatus.OK:
