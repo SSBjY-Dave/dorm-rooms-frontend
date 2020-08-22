@@ -68,7 +68,7 @@ export class ReservationComponent implements OnInit, AfterViewInit {
   }
 
   public isSexChangeAllowed(room: Room): boolean {
-    if (room.roomConnectors.length < 2) { return true; }
+    if (room.roomConnectors === undefined || room.roomConnectors.length < 2) { return true; }
     let i = 1;
     while (i < room.roomConnectors.length && room.roomConnectors[i].people.sex === room.roomConnectors[i - 1].people.sex) {
       ++i;
