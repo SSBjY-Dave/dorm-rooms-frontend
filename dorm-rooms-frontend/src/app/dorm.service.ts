@@ -156,6 +156,11 @@ export class DormService {
             (!room.locked);
   }
 
+  // Utility operations
+  public getExportData(): Observable<any> {
+    return this.startGetRequest<any>(Urls.UTILITY_EXPORT_DATA);
+  }
+
   private getRequestHeader(): any {
     return {Authorization: 'Basic ' + this.authorizationToken, 'Content-Type': 'application/json;charset=UTF-8'};
   }

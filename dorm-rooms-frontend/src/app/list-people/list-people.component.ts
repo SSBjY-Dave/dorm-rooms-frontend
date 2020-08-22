@@ -24,13 +24,13 @@ export class ListPeopleComponent implements OnInit {
 
   personSelector(person: People): void {
     this.person = person;
-  } 
-  
+  }
+
   openPeopleEditor(person: People): void {
     this.peopleEditorActive = true;
     this.person=person;
   }
-  
+
   closePeopleEditor(): void {
     this.peopleEditorActive = false;
   }
@@ -122,7 +122,21 @@ export class ListPeopleComponent implements OnInit {
   }
 
   exportTable(): void{
-    console.log('soon');
+    AppComponent.messageEvent.emit('Az exportálás elkezdődött, kérlek ne indítsd el mégegyszer párhuzamosan!!!');
+    this.dormService.getExportData().subscribe(data => {
+      const blob = new Blob([data], { type: 'application/vnd.ms-excel'});
+      const downloadUrl = URL.createObjectURL(blob);
+      const downloadDate = new Date();
+
+      const dummyAnchorElement = document.createElement('a') as HTMLAnchorElement;
+      dummyAnchorElement.href = downloadUrl;
+      dummyAnchorElement.download = 'ADK_export_' + downloadDate.getFullYear() + '-' + downloadDate.getMonth() + '-' + downloadDate.getDay()
+                                      + ' ' + downloadDate.getHours() + ':' + downloadDate.getMinutes() + ':' + downloadDate.getSeconds();
+      document.body.appendChild(dummyAnchorElement);
+      dummyAnchorElement.click();
+      document.body.removeChild(dummyAnchorElement);
+      URL.revokeObjectURL(downloadUrl);
+    });
   }
 
 }

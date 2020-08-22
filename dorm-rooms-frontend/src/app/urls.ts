@@ -36,4 +36,7 @@ export class Urls {
   public static ROOM_SET_LOCK_STATE     = Urls.ROOM_CONTROLLER + '/setLockState';
   public static ROOM_SET_ALLOWED_SEX    = Urls.ROOM_CONTROLLER + '/setAllowedSex';
   public static ROOM_GET_ALL            = Urls.ROOM_CONTROLLER + '/getAll';
+
+  private static UTILITY_CONTROLLER   = Urls.API_PREFIX + '/utility';
+  public static UTILITY_EXPORT_DATA   = Urls.UTILITY_CONTROLLER + '/export';
 }
